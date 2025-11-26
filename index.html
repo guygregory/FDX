@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Frontier Disambiguation Experience (FDX)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0c0f1a;
+            --fg: #f4f6fb;
+            --muted: #9aa4c2;
+            --accent: #4b8fff;
+            --accent-soft: rgba(75, 143, 255, 0.15);
+            --card-bg: rgba(17, 22, 36, 0.95);
+            --border: rgba(148, 163, 184, 0.2);
+            --radius: 16px;
+            --max-width: 1100px;
+            --shadow: 0 18px 45px rgba(10, 14, 28, 0.4);
+            --header-height: 0px;
+            --nav-height: 0px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: radial-gradient(circle at top right, rgba(75,143,255,0.25), transparent 55%),
+                        radial-gradient(circle at bottom left, rgba(122,82,231,0.2), transparent 45%),
+                        var(--bg);
+            color: var(--fg);
+            line-height: 1.6;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            padding: 18px 24px;
+            text-align: center;
+            background: rgba(12, 15, 26, 0.95);
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        header h1 {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            font-size: clamp(2.3rem, 4.6vw, 3.1rem);
+            margin: 0;
+            letter-spacing: 0.02em;
+        }
+
+        header p {
+            margin: 0 auto;
+            max-width: 640px;
+            color: var(--muted);
+            font-size: 1.05rem;
+        }
+
+        nav {
+            position: sticky;
+            top: var(--header-height);
+            z-index: 100;
+            backdrop-filter: blur(18px);
+            background: rgba(12, 15, 26, 0.85);
+            border-bottom: 1px solid var(--border);
+        }
+
+        nav ul {
+            display: flex;
+            flex-wrap: wrap;
+            list-style: none;
+            margin: 0;
+            padding: 12px clamp(16px, 5vw, 48px);
+            gap: clamp(12px, 2vw, 28px);
+            justify-content: center;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--muted);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 999px;
+            transition: background 0.2s ease, color 0.2s ease;
+            white-space: nowrap;
+        }
+
+        nav a:hover,
+        nav a:focus {
+            color: var(--fg);
+            background: var(--accent-soft);
+        }
+
+        nav a.active {
+            color: var(--fg);
+            background: var(--accent);
+        }
+
+        main {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 24px 24px 96px;
+            display: grid;
+            gap: 32px;
+        }
+
+        .intro-card,
+        .frontier-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: clamp(24px, 3vw, 40px);
+            box-shadow: var(--shadow);
+        }
+
+        .frontier-card {
+            scroll-margin-top: calc(var(--header-height) + var(--nav-height) + 24px);
+        }
+
+        .intro-card h2 {
+            margin-top: 0;
+            font-size: 1.85rem;
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 16px 0 0;
+        }
+
+        .tag {
+            border-radius: 999px;
+            padding: 6px 14px;
+            font-size: 0.85rem;
+            background: var(--accent-soft);
+            color: var(--fg);
+            letter-spacing: 0.01em;
+        }
+
+        .frontier-card h2 {
+            margin-top: 0;
+            font-size: clamp(1.8rem, 2.5vw, 2rem);
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            margin-bottom: 24px;
+        }
+
+        .frontier-card section + section {
+            margin-top: 24px;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        ul {
+            margin: 0 0 16px 20px;
+            padding: 0;
+        }
+
+        li + li {
+            margin-top: 8px;
+        }
+
+        nav li + li {
+            margin-top: 0;
+        }
+
+        .resources {
+            border-top: 1px solid var(--border);
+            margin-top: 24px;
+            padding-top: 24px;
+        }
+
+        .resources a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .resources a:hover,
+        .resources a:focus {
+            text-decoration: underline;
+        }
+
+        .markdown-content {
+            font-size: 1rem;
+        }
+
+        .markdown-content h1:first-of-type {
+            font-size: clamp(1.8rem, 2.5vw, 2rem);
+            margin: 0 0 12px;
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+        }
+
+        .markdown-content h2 {
+            font-size: 1.1rem;
+            margin: 24px 0 12px;
+            font-weight: 700;
+        }
+
+        .markdown-content h3 {
+            font-size: 1rem;
+            margin: 18px 0 10px;
+        }
+
+        .markdown-content ul {
+            margin-left: 20px;
+        }
+
+        .markdown-content a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .markdown-content a:hover,
+        .markdown-content a:focus {
+            text-decoration: underline;
+        }
+
+        .loading-copy {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .quick-compare {
+            display: grid;
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .compare-item {
+            display: grid;
+            gap: 8px;
+            padding: 16px;
+            background: rgba(20, 24, 40, 0.9);
+            border-radius: 12px;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+        }
+
+        .compare-item strong {
+            font-size: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .quick-compare {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding-top: 12px;
+            }
+
+            nav ul {
+                padding-inline: 12px;
+            }
+        }
+
+        footer {
+            text-align: center;
+            color: var(--muted);
+            padding: 32px 24px 48px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Frontier Disambiguation Experience (FDX)</h1>
+    </header>
+
+    <nav aria-label="Frontier references">
+        <ul>
+            <li><a href="#frontier-firm">Frontier Firm</a></li>
+            <li><a href="#frontier-program">Frontier Program</a></li>
+            <li><a href="#frontier-partner">Frontier Partner badge</a></li>
+            <li><a href="#frontier-distributor">Frontier Distributor Designation</a></li>
+            <li><a href="#frontier-model-forum">Frontier Model Forum</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <article id="frontier-firm" class="frontier-card" data-source="frontierfirm.md" aria-busy="true">
+            <div class="markdown-content" aria-live="polite">
+                <p class="loading-copy">Loading Frontier Firm&hellip;</p>
+            </div>
+        </article>
+        <article id="frontier-program" class="frontier-card" data-source="frontierprogram.md" aria-busy="true">
+            <div class="markdown-content" aria-live="polite">
+                <p class="loading-copy">Loading Frontier Program&hellip;</p>
+            </div>
+        </article>
+        <article id="frontier-partner" class="frontier-card" data-source="frontierpartner.md" aria-busy="true">
+            <div class="markdown-content" aria-live="polite">
+                <p class="loading-copy">Loading Frontier Partner badge&hellip;</p>
+            </div>
+        </article>
+        <article id="frontier-distributor" class="frontier-card" data-source="frontierdistributor.md" aria-busy="true">
+            <div class="markdown-content" aria-live="polite">
+                <p class="loading-copy">Loading Frontier Distributor Designation&hellip;</p>
+            </div>
+        </article>
+        <article id="frontier-model-forum" class="frontier-card" data-source="frontiermodelforum.md" aria-busy="true">
+            <div class="markdown-content" aria-live="polite">
+                <p class="loading-copy">Loading Frontier Model Forum&hellip;</p>
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        Created by Guy Gregory and GitHub Copilot
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.marked) {
+                marked.setOptions({
+                    mangle: false,
+                    headerIds: false
+                });
+            }
+
+            hydrateFrontierCards();
+            initSectionObserver();
+            updateStickyMetrics();
+            window.addEventListener('resize', updateStickyMetrics);
+            window.addEventListener('load', updateStickyMetrics);
+        });
+
+        function hydrateFrontierCards() {
+            document.querySelectorAll('.frontier-card[data-source]').forEach(card => {
+                const source = card.dataset.source;
+                const container = card.querySelector('.markdown-content');
+
+                if (!source || !container) {
+                    return;
+                }
+
+                fetch(source)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Failed to load ${source}`);
+                        }
+                        return response.text();
+                    })
+                    .then(text => {
+                        container.innerHTML = window.marked ? marked.parse(text) : text;
+                        enhanceResourceSections(container);
+                        card.removeAttribute('aria-busy');
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        container.innerHTML = '<p class="loading-copy">Unable to load this content right now.</p>';
+                        card.removeAttribute('aria-busy');
+                    });
+            });
+        }
+
+        function enhanceResourceSections(container) {
+            container.querySelectorAll('h2').forEach(heading => {
+                if (heading.textContent.trim().toLowerCase() === 'resources') {
+                    const wrapper = document.createElement('section');
+                    wrapper.className = 'resources';
+                    heading.parentNode.insertBefore(wrapper, heading);
+
+                    let cursor = heading;
+                    while (cursor) {
+                        const next = cursor.nextElementSibling;
+                        wrapper.appendChild(cursor);
+
+                        if (!next || next.tagName === 'H2') {
+                            break;
+                        }
+
+                        cursor = next;
+                    }
+                }
+            });
+        }
+
+        function initSectionObserver() {
+            const navLinks = document.querySelectorAll('nav a');
+            const sections = Array.from(navLinks).map(link => document.querySelector(link.getAttribute('href')));
+
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    const index = sections.indexOf(entry.target);
+                    if (index !== -1) {
+                        navLinks[index].classList.toggle('active', entry.isIntersecting);
+                    }
+                });
+            }, {
+                rootMargin: '-45% 0px -45% 0px'
+            });
+
+            sections.forEach(section => {
+                if (section) {
+                    observer.observe(section);
+                }
+            });
+        }
+
+        function updateStickyMetrics() {
+            const header = document.querySelector('header');
+            const nav = document.querySelector('nav');
+
+            const headerHeight = header ? header.getBoundingClientRect().height : 0;
+            const navHeight = nav ? nav.getBoundingClientRect().height : 0;
+
+            document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+            document.documentElement.style.setProperty('--nav-height', `${navHeight}px`);
+        }
+    </script>
+</body>
+</html>
