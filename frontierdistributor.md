@@ -34,6 +34,6 @@ This recognition matters because it:
 
 ## Resources
 
-- [https://aka.ms/FrontierDistributorDesignation](https://aka.ms/FrontierDistributorDesignation)
-- [https://aka.ms/FrontierDistributorDesignationFAQ](https://aka.ms/FrontierDistributorDesignationFAQ)
-- [https://aka.ms/FrontierDistributorDesignationChecklist](https://aka.ms/FrontierDistributorDesignationChecklist)
+- [Frontier Distributor Designation Overview](https://aka.ms/FrontierDistributorDesignation)
+- [Frontier Distributor Designation FAQ](https://aka.ms/FrontierDistributorDesignationFAQ)
+- [Frontier Distributor Designation Checklist](https://aka.ms/FrontierDistributorDesignationChecklist)

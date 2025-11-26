@@ -30,4 +30,4 @@
 
 ## Resources
 
-- [https://adoption.microsoft.com/copilot/frontier-program/](https://adoption.microsoft.com/copilot/frontier-program/)
+- [Frontier Program](https://adoption.microsoft.com/copilot/frontier-program/)

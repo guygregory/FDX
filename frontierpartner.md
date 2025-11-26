@@ -29,5 +29,4 @@ The Frontier Partner badge is a new recognition introduced under the Microsoft A
 
 ## Resources
 
-- Partner-facing link
-	- https://aka.ms/frontier-partner
+- [Frontier Partner badge overview PDF](https://aka.ms/frontier-partner)

@@ -28,5 +28,5 @@ Microsoft’s research (31,000 workers across 31 countries + trillions of Micros
 
 ## Resources
 
-- [https://www.microsoft.com/worklab/frontier-firm-resources](https://www.microsoft.com/worklab/frontier-firm-resources)
-- [https://aka.ms/wti](https://aka.ms/wti)
+- [Frontier Firm Resources](https://www.microsoft.com/worklab/frontier-firm-resources)
+- [Work Trend Index Report](https://aka.ms/wti)
