@@ -16,6 +16,7 @@
 - Requires an active Microsoft 365 Copilot licence.
 - Admins can selectively enable Frontier features for specific users or groups.
 - No nomination process--features appear in the "Built by Microsoft" section of the app store when enabled.
+- Individuals with Microsoft 365 Personal, Family, or Premium subscriptions can also access and use Frontier features.
 
 ## Benefits
 
@@ -31,3 +32,4 @@
 ## Resources
 
 - [Frontier Program](https://adoption.microsoft.com/copilot/frontier-program/)
+- [Getting Started Guide](https://aka.ms/Frontier/GettingStartedGuide)
