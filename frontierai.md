@@ -2,7 +2,7 @@
 
 ## What is it?
 
-The term **"Frontier AI"** was coined by OpenAI in 2023 to describe "highly capable foundation models that could possess dangerous capabilities sufficient to pose severe risks to public safety." Since its introduction, the "Frontier" terminology has been widely adopted as a recognised industry term for describing the most advanced AI models, especially in the context of risk, safety, and regulation.
+The term **"Frontier AI [models]"** was coined by OpenAI in 2023 to describe "highly capable foundation models that could possess dangerous capabilities sufficient to pose severe risks to public safety." Since its introduction, the "Frontier" terminology has been widely adopted as a recognised industry term for describing the most advanced AI models, especially in the context of risk, safety, and regulation.
 
 ## Why It Matters
 
