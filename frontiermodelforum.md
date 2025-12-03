@@ -30,4 +30,5 @@ Open to organisations that:
 ## Resources
 
 - [Frontier Model Forum](https://www.frontiermodelforum.org)
+- [Microsoft, Anthropic, Google, and OpenAI launch Frontier Model Forum](https://blogs.microsoft.com/on-the-issues/2023/07/26/anthropic-google-microsoft-openai-launch-frontier-model-forum/)
 
