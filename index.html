@@ -17,7 +17,7 @@
             --card-bg: rgba(17, 22, 36, 0.95);
             --border: rgba(148, 163, 184, 0.2);
             --radius: 16px;
-            --max-width: 1100px;
+            --max-width: 1225px;
             --shadow: 0 18px 45px rgba(10, 14, 28, 0.4);
             --header-height: 0px;
             --nav-height: 0px;
@@ -50,7 +50,7 @@
 
         header h1 {
             font-family: 'Space Grotesk', 'Inter', sans-serif;
-            font-size: clamp(2.3rem, 4.6vw, 3.1rem);
+            font-size: clamp(2.55rem, 5vw, 3.55rem);
             margin: 0;
             letter-spacing: 0.02em;
         }
@@ -292,11 +292,17 @@
             <li><a href="#frontier-program">Frontier Program</a></li>
             <li><a href="#frontier-partner">Frontier Partner badge</a></li>
             <li><a href="#frontier-distributor">Frontier Distributor Designation</a></li>
+            <li><a href="#frontier-ai">Frontier AI</a></li>
             <li><a href="#frontier-model-forum">Frontier Model Forum</a></li>
         </ul>
     </nav>
 
     <main>
+        <article id="frontier-ai" class="frontier-card" data-source="frontierai.md" aria-busy="true">
+            <div class="markdown-content" aria-live="polite">
+                <p class="loading-copy">Loading Frontier AI&hellip;</p>
+            </div>
+        </article>
         <article id="frontier-firm" class="frontier-card" data-source="frontierfirm.md" aria-busy="true">
             <div class="markdown-content" aria-live="polite">
                 <p class="loading-copy">Loading Frontier Firm&hellip;</p>
