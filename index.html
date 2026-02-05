@@ -360,6 +360,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
+        let suppressObserver = false;
+
         document.addEventListener('DOMContentLoaded', () => {
             if (window.marked) {
                 marked.setOptions({
@@ -384,6 +386,17 @@
             if (hash) {
                 const target = document.querySelector(hash);
                 if (target) {
+                    // Set the correct nav link as active immediately
+                    const navLinks = document.querySelectorAll('nav a');
+                    const matchingLink = document.querySelector(`nav a[href="${hash}"]`);
+                    if (matchingLink) {
+                        navLinks.forEach(l => l.classList.remove('active'));
+                        matchingLink.classList.add('active');
+                    }
+
+                    // Suppress observer updates during scroll
+                    suppressObserver = true;
+
                     // Small delay to ensure sticky metrics are calculated
                     setTimeout(() => {
                         const headerHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 0;
@@ -391,6 +404,11 @@
                         const offset = headerHeight + navHeight + 24;
                         const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
                         window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+
+                        // Reset observer suppression after scroll completes
+                        setTimeout(() => {
+                            suppressObserver = false;
+                        }, 1000);
                     }, 100);
                 }
             }
@@ -450,13 +468,12 @@
         function initSectionObserver() {
             const navLinks = document.querySelectorAll('nav a');
             const sections = Array.from(navLinks).map(link => document.querySelector(link.getAttribute('href')));
-            let activeFromClick = false;
 
             // Handle click events on nav links
             navLinks.forEach((link, index) => {
                 link.addEventListener('click', (e) => {
                     // Mark that we just clicked a link
-                    activeFromClick = true;
+                    suppressObserver = true;
                     
                     // Remove active from all links
                     navLinks.forEach(l => l.classList.remove('active'));
@@ -466,14 +483,14 @@
                     
                     // Reset the click flag after scrolling completes
                     setTimeout(() => {
-                        activeFromClick = false;
+                        suppressObserver = false;
                     }, 1000);
                 });
             });
 
             const observer = new IntersectionObserver(entries => {
                 // Don't update based on scroll if we just clicked a link
-                if (activeFromClick) {
+                if (suppressObserver) {
                     return;
                 }
                 
