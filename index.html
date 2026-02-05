@@ -369,13 +369,17 @@
             }
 
             hydrateFrontierCards();
-            initSectionObserver();
             updateStickyMetrics();
             window.addEventListener('resize', updateStickyMetrics);
+            window.addEventListener('hashchange', handleHashChange);
             window.addEventListener('load', () => {
                 updateStickyMetrics();
                 // Handle hash navigation after page fully loads
                 handleInitialHash();
+                // Initialize observer after hash handling is complete
+                setTimeout(() => {
+                    initSectionObserver();
+                }, 200);
             });
         });
 
@@ -384,6 +388,9 @@
             if (hash) {
                 const target = document.querySelector(hash);
                 if (target) {
+                    // Update active state in navigation
+                    updateActiveNavLink(hash);
+                    
                     // Small delay to ensure sticky metrics are calculated
                     setTimeout(() => {
                         const headerHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 0;
@@ -394,6 +401,24 @@
                     }, 100);
                 }
             }
+        }
+
+        function handleHashChange() {
+            const hash = window.location.hash;
+            if (hash) {
+                updateActiveNavLink(hash);
+            }
+        }
+
+        function updateActiveNavLink(hash) {
+            const navLinks = document.querySelectorAll('nav a');
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === hash) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
         }
 
         function hydrateFrontierCards() {
@@ -492,6 +517,15 @@
                     observer.observe(section);
                 }
             });
+
+            // After observer is set up, ensure the correct link is active based on hash
+            // This prevents the observer from immediately overriding our hash-based selection
+            setTimeout(() => {
+                const hash = window.location.hash;
+                if (hash) {
+                    updateActiveNavLink(hash);
+                }
+            }, 100);
         }
 
         function updateStickyMetrics() {
