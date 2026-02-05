@@ -1,509 +1,776 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Frontier Disambiguation Experience (FDX)</title>
+    <title>FDX &mdash; Frontier Disambiguation Experience</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* ─── Reset & Tokens ──────────────────────────── */
         :root {
-            --bg: #0c0f1a;
-            --fg: #f4f6fb;
-            --muted: #9aa4c2;
-            --accent: #4b8fff;
-            --accent-soft: rgba(75, 143, 255, 0.15);
-            --card-bg: rgba(17, 22, 36, 0.95);
-            --border: rgba(148, 163, 184, 0.2);
-            --radius: 16px;
-            --max-width: 1225px;
-            --shadow: 0 18px 45px rgba(10, 14, 28, 0.4);
-            --header-height: 0px;
-            --nav-height: 0px;
+            --bg: #09090b;
+            --surface: rgba(255,255,255,0.04);
+            --surface-hover: rgba(255,255,255,0.07);
+            --surface-card: rgba(255,255,255,0.035);
+            --border: rgba(255,255,255,0.08);
+            --border-hover: rgba(255,255,255,0.14);
+            --text: #e4e4e7;
+            --text-dim: #a1a1aa;
+            --text-muted: #71717a;
+            --accent: #a78bfa;
+            --accent-dim: rgba(167,139,250,0.15);
+            --accent-glow: rgba(167,139,250,0.25);
+            --green: #34d399;
+            --green-dim: rgba(52,211,153,0.12);
+            --cyan: #22d3ee;
+            --cyan-dim: rgba(34,211,238,0.10);
+            --title-from: #cbb8f7;
+            --title-mid: #b4ccf4;
+            --title-to: #9de0f0;
+            --topbar-bg: rgba(9,9,11,0.85);
+            --card-heading: #fafafa;
+            --card-hover-shadow: rgba(167,139,250,0.04);
+            --scene-a: rgba(167,139,250,0.12);
+            --scene-b: rgba(34,211,238,0.06);
+            --grid-line: rgba(255,255,255,0.015);
+            --r: 12px;
+            --r-lg: 20px;
+            --max-w: 960px;
+            --nav-h: 0px;
         }
 
-        * {
-            box-sizing: border-box;
+        html.light {
+            --bg: #f5f5f7;
+            --surface: rgba(0,0,0,0.03);
+            --surface-hover: rgba(0,0,0,0.06);
+            --surface-card: rgba(255,255,255,0.7);
+            --border: rgba(0,0,0,0.09);
+            --border-hover: rgba(0,0,0,0.16);
+            --text: #1c1c1e;
+            --text-dim: #48484a;
+            --text-muted: #8e8e93;
+            --accent: #7c3aed;
+            --accent-dim: rgba(124,58,237,0.10);
+            --accent-glow: rgba(124,58,237,0.18);
+            --green: #059669;
+            --cyan: #0891b2;
+            --title-from: #7c3aed;
+            --title-mid: #4266d0;
+            --title-to: #0891b2;
+            --topbar-bg: rgba(245,245,247,0.85);
+            --card-heading: #1c1c1e;
+            --card-hover-shadow: rgba(0,0,0,0.06);
+            --scene-a: transparent;
+            --scene-b: transparent;
+            --grid-line: rgba(0,0,0,0);
         }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
         body {
-            margin: 0;
-            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: radial-gradient(circle at top right, rgba(75,143,255,0.25), transparent 55%),
-                        radial-gradient(circle at bottom left, rgba(122,82,231,0.2), transparent 45%),
-                        var(--bg);
-            color: var(--fg);
-            line-height: 1.6;
+            font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.65;
+            min-height: 100dvh;
+            overflow-x: hidden;
         }
 
-        header {
+        /* ─── Ambient Background ─────────────────────── */
+        .scene {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .scene::before {
+            content: '';
+            position: absolute;
+            width: 800px;
+            height: 800px;
+            top: -320px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: radial-gradient(circle, var(--scene-a) 0%, transparent 65%);
+        }
+
+        .scene::after {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            bottom: -200px;
+            right: -100px;
+            background: radial-gradient(circle, var(--scene-b) 0%, transparent 70%);
+        }
+
+        .grid-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background-image:
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, black 10%, transparent 80%);
+        }
+
+        /* ─── Shell ───────────────────────────────────── */
+        .shell {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 0 clamp(16px, 4vw, 32px);
+        }
+
+        /* ─── Sticky Header ───────────────────────────── */
+        .topbar {
             position: sticky;
             top: 0;
-            z-index: 200;
-            padding: 18px 24px;
-            text-align: center;
-            background: rgba(12, 15, 26, 0.95);
-            backdrop-filter: blur(18px);
-            border-bottom: 1px solid var(--border);
-        }
-
-        header h1 {
-            font-family: 'Space Grotesk', 'Inter', sans-serif;
-            font-size: clamp(2.55rem, 5vw, 3.55rem);
-            margin: 0;
-            letter-spacing: 0.02em;
-        }
-
-        header p {
-            margin: 0 auto;
-            max-width: 640px;
-            color: var(--muted);
-            font-size: 1.05rem;
-        }
-
-        nav {
-            position: sticky;
-            top: var(--header-height);
             z-index: 100;
-            backdrop-filter: blur(18px);
-            background: rgba(12, 15, 26, 0.85);
+            background: var(--topbar-bg);
+            backdrop-filter: blur(16px) saturate(1.4);
+            border-bottom: none;
+            padding: 12px 0 10px;
+        }
+
+        .topbar-title {
+            text-align: center;
+            margin-bottom: 16px;
+            padding-top: 8px;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            right: clamp(16px, 4vw, 32px);
+            bottom: 24px;
+            z-index: 200;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--surface);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.2s, background 0.2s, border-color 0.2s;
+        }
+
+        @media (hover: hover) {
+            .theme-toggle:hover {
+                color: var(--text);
+                background: var(--surface-hover);
+                border-color: var(--border-hover);
+            }
+        }
+
+        .theme-toggle:focus-visible {
+            color: var(--text);
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .theme-toggle svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .topbar-title h1 {
+            font-size: clamp(1.75rem, 4.8vw, 2.4rem);
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            line-height: 1.2;
+            white-space: nowrap;
+            background: linear-gradient(135deg, var(--title-from), var(--title-to));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .topbar-nav {
+            overflow: hidden;
+        }
+
+        .topbar-inner {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 0 clamp(16px, 4vw, 32px);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .topbar-inner::-webkit-scrollbar { display: none; }
+
+        .topbar-inner a {
+            flex: 0 0 auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            transition: color 0.2s, background 0.2s, border-color 0.2s;
+            white-space: nowrap;
+        }
+
+        @media (hover: hover) {
+            .topbar-inner a:hover {
+                color: var(--text);
+                background: var(--surface-hover);
+                border-color: var(--border);
+            }
+        }
+
+        .topbar-inner a:focus-visible {
+            color: var(--text);
+            background: var(--surface-hover);
+            border-color: var(--border);
+            outline: none;
+        }
+
+        .topbar-inner a.active {
+            color: var(--card-heading);
+            background: var(--accent-dim);
+            border-color: rgba(167,139,250,0.22);
+        }
+
+        /* ─── Cards ───────────────────────────────────── */
+        .cards {
+            padding: 20px 0 80px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            position: relative;
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            overflow: hidden;
+            scroll-margin-top: calc(var(--nav-h) + 32px);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            border-color: var(--border-hover);
+            box-shadow: 0 0 40px var(--card-hover-shadow);
+        }
+
+        .card-accent {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0.4;
+        }
+
+        .card-inner {
+            padding: clamp(20px, 3vw, 36px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
             border-bottom: 1px solid var(--border);
         }
 
-        nav ul {
-            display: flex;
-            flex-wrap: wrap;
-            list-style: none;
-            margin: 0 auto;
-            padding: 12px clamp(16px, 5vw, 48px);
-            gap: clamp(8px, 1.5vw, 20px);
-            justify-content: center;
-            align-items: center;
-            max-width: 900px;
-        }
-
-        nav a {
-            color: var(--muted);
-            text-decoration: none;
+        .card-header h2 {
+            font-size: clamp(1.5rem, 3.4vw, 2rem);
             font-weight: 600;
-            padding: 6px 12px;
-            border-radius: 999px;
-            transition: background 0.2s ease, color 0.2s ease;
-            white-space: nowrap;
-            font-size: clamp(0.85rem, 1.1vw, 1rem);
+            letter-spacing: -0.02em;
+            color: var(--card-heading);
+            line-height: 1.2;
         }
 
-        @media (hover: hover) {
-            nav a:hover {
-                color: var(--fg);
-                background: var(--accent-soft);
-            }
-        }
-
-        nav a:focus {
-            color: var(--fg);
-            background: var(--accent-soft);
-        }
-
-        nav a.active {
-            color: var(--fg);
-            background: var(--accent);
-        }
-
-        main {
-            max-width: var(--max-width);
-            margin: 0 auto;
-            padding: 24px 24px 96px;
-            display: grid;
-            gap: 32px;
-        }
-
-        .intro-card,
-        .frontier-card {
-            background: var(--card-bg);
+        .card-source {
+            margin-left: auto;
+            flex-shrink: 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: clamp(24px, 3vw, 40px);
-            box-shadow: var(--shadow);
+            border-radius: 6px;
+            padding: 3px 10px;
         }
 
-        .frontier-card {
-            scroll-margin-top: calc(var(--header-height) + var(--nav-height) + 24px);
-        }
-
-        .intro-card h2 {
-            margin-top: 0;
-            font-size: 1.85rem;
-            font-family: 'Space Grotesk', 'Inter', sans-serif;
-        }
-
-        .tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 16px 0 0;
-        }
-
-        .tag {
-            border-radius: 999px;
-            padding: 6px 14px;
-            font-size: 0.85rem;
-            background: var(--accent-soft);
-            color: var(--fg);
-            letter-spacing: 0.01em;
-        }
-
-        .frontier-card h2 {
-            margin-top: 0;
-            font-size: clamp(1.8rem, 2.5vw, 2rem);
-            font-family: 'Space Grotesk', 'Inter', sans-serif;
-        }
-
-        .subtitle {
-            color: var(--muted);
-            margin-bottom: 24px;
-        }
-
-        .frontier-card section + section {
-            margin-top: 24px;
-        }
-
-        h3 {
-            font-size: 1.1rem;
-            margin-bottom: 12px;
-            font-weight: 700;
-        }
-
-        ul {
-            margin: 0 0 16px 20px;
-            padding: 0;
-        }
-
-        li + li {
-            margin-top: 8px;
-        }
-
-        nav li + li {
-            margin-top: 0;
-        }
-
-        .resources {
-            border-top: 1px solid var(--border);
-            margin-top: 24px;
-            padding-top: 24px;
-        }
-
-        .resources a {
-            color: var(--accent);
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        @media (hover: hover) {
-            .resources a:hover {
-                text-decoration: underline;
-            }
-        }
-
-        .resources a:focus {
-            text-decoration: underline;
-        }
-
-        .markdown-content {
-            font-size: 1rem;
-        }
-
-        .markdown-content h1:first-of-type {
-            font-size: clamp(1.8rem, 2.5vw, 2rem);
-            margin: 0 0 12px;
-            font-family: 'Space Grotesk', 'Inter', sans-serif;
-        }
-
-        .markdown-content h2 {
-            font-size: 1.1rem;
-            margin: 24px 0 12px;
-            font-weight: 700;
-        }
-
-        .markdown-content h3 {
-            font-size: 1rem;
-            margin: 18px 0 10px;
-        }
-
-        .markdown-content ul {
-            margin-left: 20px;
-        }
-
-        .markdown-content a {
-            color: var(--accent);
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        @media (hover: hover) {
-            .markdown-content a:hover {
-                text-decoration: underline;
-            }
-        }
-
-        .markdown-content a:focus {
-            text-decoration: underline;
-        }
-
-        .loading-copy {
-            color: var(--muted);
+        /* ─── Markdown Content ────────────────────────── */
+        .md {
             font-size: 0.95rem;
+            color: var(--text-dim);
+            text-align: justify;
         }
 
-        .quick-compare {
-            display: grid;
-            gap: 16px;
+        .md h1 { display: none; }
+
+        .md h2 {
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text);
+            margin: 28px 0 12px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .md h2:first-of-type {
+            margin-top: 0;
+        }
+
+        .md h3 {
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--text);
+            margin: 20px 0 8px;
+        }
+
+        .md p {
+            margin: 0 0 12px;
+        }
+
+        .md ul {
+            margin: 0 0 14px;
+            padding-left: 20px;
+        }
+
+        .md li {
+            margin-top: 6px;
+        }
+
+        .md li::marker {
+            color: var(--accent);
+        }
+
+        .md strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .md code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 0.1em 0.4em;
+            color: var(--cyan);
+        }
+
+        .md a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 1px solid rgba(167,139,250,0.2);
+            transition: border-color 0.2s;
+        }
+
+        @media (hover: hover) {
+            .md a:hover { border-bottom-color: var(--accent); }
+        }
+
+        .md a:focus-visible {
+            border-bottom-color: var(--accent);
+            outline: none;
+        }
+
+        /* Resources block */
+        .md .resources-block {
             margin-top: 24px;
-        }
-
-        .compare-item {
-            display: grid;
-            gap: 8px;
             padding: 16px;
-            background: rgba(20, 24, 40, 0.9);
-            border-radius: 12px;
-            border: 1px solid rgba(148, 163, 184, 0.18);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            border-left: 2px solid var(--border);
         }
 
-        .compare-item strong {
-            font-size: 1rem;
+        .md .resources-block h2 {
+            margin-top: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+            color: var(--title-mid);
         }
 
-        @media (min-width: 768px) {
-            .quick-compare {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
+        .md .resources-block a {
+            color: var(--title-mid);
+            border-bottom-color: var(--accent-dim);
+        }
+
+        @media (hover: hover) {
+            .md .resources-block a:hover {
+                border-bottom-color: var(--title-mid);
             }
         }
 
-        @media (max-width: 600px) {
-            header {
-                padding-top: 12px;
-            }
-
-            nav ul {
-                padding-inline: 12px;
-            }
+        /* Loading */
+        .card-loading {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            animation: blink 1.2s step-end infinite;
         }
 
+        .card-loading::after { content: '...'; }
+
+        @keyframes blink {
+            50% { opacity: 0.4; }
+        }
+
+        /* Card enter animation */
+        .card {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1),
+                        transform 0.5s cubic-bezier(0.16,1,0.3,1),
+                        border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ─── Footer ──────────────────────────────────── */
         footer {
             text-align: center;
-            color: var(--muted);
-            padding: 32px 24px 48px;
-            font-size: 0.9rem;
+            padding: 0 24px 48px;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+        }
+
+        footer .divider {
+            width: 40px;
+            height: 1px;
+            background: var(--border);
+            margin: 0 auto 16px;
+        }
+
+        /* ─── Responsive ──────────────────────────────── */
+        @media (max-width: 640px) {
+            .card-source { display: none; }
+            .card-header { gap: 10px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            .card,
+            .topbar-inner a {
+                transition: none;
+                animation: none;
+                opacity: 1;
+                transform: none;
+            }
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Frontier Disambiguation Experience (FDX)</h1>
+    <div class="scene" aria-hidden="true"></div>
+    <div class="grid-overlay" aria-hidden="true"></div>
+
+    <!-- Theme toggle -->
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle theme">
+        <svg id="themeIcon" viewBox="0 0 24 24"></svg>
+    </button>
+
+    <!-- Sticky Header + Nav -->
+    <header class="topbar" aria-label="Frontier topics">
+        <div class="topbar-title shell">
+            <h1>Frontier Disambiguation Index (FDX)</h1>
+        </div>
+        <nav class="topbar-nav">
+            <div class="topbar-inner" id="topNav"></div>
+        </nav>
     </header>
 
-    <nav aria-label="Frontier references">
-        <ul>
-            <li><a href="#frontier-firm">Frontier Firm</a></li>
-            <li><a href="#frontier-program">Frontier Program</a></li>
-            <li><a href="#frontier-partner">Frontier Partner badge</a></li>
-            <li><a href="#frontier-distributor">Frontier Distributor Designation</a></li>
-            <li><a href="#frontier-ai">Frontier AI</a></li>
-            <li><a href="#frontier-model-forum">Frontier Model Forum</a></li>
-            <li><a href="#openai-frontier">OpenAI Frontier</a></li>
-        </ul>
-    </nav>
-
-    <main>
-        <article id="frontier-firm" class="frontier-card" data-source="frontierfirm.md" aria-busy="true">
-            <div class="markdown-content" aria-live="polite">
-                <p class="loading-copy">Loading Frontier Firm&hellip;</p>
-            </div>
-        </article>
-        <article id="frontier-program" class="frontier-card" data-source="frontierprogram.md" aria-busy="true">
-            <div class="markdown-content" aria-live="polite">
-                <p class="loading-copy">Loading Frontier Program&hellip;</p>
-            </div>
-        </article>
-        <article id="frontier-partner" class="frontier-card" data-source="frontierpartner.md" aria-busy="true">
-            <div class="markdown-content" aria-live="polite">
-                <p class="loading-copy">Loading Frontier Partner badge&hellip;</p>
-            </div>
-        </article>
-        <article id="frontier-distributor" class="frontier-card" data-source="frontierdistributor.md" aria-busy="true">
-            <div class="markdown-content" aria-live="polite">
-                <p class="loading-copy">Loading Frontier Distributor Designation&hellip;</p>
-            </div>
-        </article>
-        <article id="frontier-ai" class="frontier-card" data-source="frontierai.md" aria-busy="true">
-            <div class="markdown-content" aria-live="polite">
-                <p class="loading-copy">Loading Frontier AI&hellip;</p>
-            </div>
-        </article>
-        <article id="frontier-model-forum" class="frontier-card" data-source="frontiermodelforum.md" aria-busy="true">
-            <div class="markdown-content" aria-live="polite">
-                <p class="loading-copy">Loading Frontier Model Forum&hellip;</p>
-            </div>
-        </article>
-        <article id="openai-frontier" class="frontier-card" data-source="openaifrontier.md" aria-busy="true">
-            <div class="markdown-content" aria-live="polite">
-                <p class="loading-copy">Loading OpenAI Frontier&hellip;</p>
-            </div>
-        </article>
-    </main>
+    <!-- Content -->
+    <div class="shell">
+        <div class="cards" id="cardContainer"></div>
+    </div>
 
     <footer>
+        <div class="divider" aria-hidden="true"></div>
         Created by Guy Gregory and GitHub Copilot
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            if (window.marked) {
-                marked.setOptions({
-                    mangle: false,
-                    headerIds: false
-                });
-            }
+    (() => {
+        'use strict';
 
-            hydrateFrontierCards();
-            initSectionObserver();
-            updateStickyMetrics();
-            window.addEventListener('resize', updateStickyMetrics);
-            window.addEventListener('load', () => {
-                updateStickyMetrics();
-                // Handle hash navigation after page fully loads
-                handleInitialHash();
+        const TOPICS = [
+            { id: 'frontier-firm', label: 'Frontier Firm', src: 'frontierfirm.md' },
+            { id: 'frontier-program', label: 'Frontier Program', src: 'frontierprogram.md' },
+            { id: 'frontier-partner', label: 'Frontier Partner', src: 'frontierpartner.md' },
+            { id: 'frontier-distributor', label: 'Frontier Distributor', src: 'frontierdistributor.md' },
+            { id: 'frontier-ai', label: 'Frontier AI', src: 'frontierai.md' },
+            { id: 'frontier-model-forum', label: 'Frontier Model Forum', src: 'frontiermodelforum.md' },
+            { id: 'openai-frontier', label: 'OpenAI Frontier', src: 'openaifrontier.md' }
+        ];
+
+        const nav = document.getElementById('topNav');
+        const container = document.getElementById('cardContainer');
+
+        /* ── Build DOM ───────────────────────────────── */
+        function build() {
+            const navFrag = document.createDocumentFragment();
+            const cardFrag = document.createDocumentFragment();
+
+            TOPICS.forEach((t, i) => {
+                // nav link
+                const a = document.createElement('a');
+                a.href = `#${t.id}`;
+                a.dataset.target = t.id;
+                a.innerHTML = esc(t.label);
+                navFrag.appendChild(a);
+
+                // card
+                const article = document.createElement('article');
+                article.className = 'card';
+                article.id = t.id;
+                article.setAttribute('aria-busy', 'true');
+                article.innerHTML = `
+                    <div class="card-accent" aria-hidden="true"></div>
+                    <div class="card-inner">
+                        <header class="card-header">
+                            <h2>${esc(t.label)}</h2>
+                            <span class="card-source">${esc(t.src)}</span>
+                        </header>
+                        <div class="md" aria-live="polite">
+                            <p class="card-loading">Loading</p>
+                        </div>
+                    </div>`;
+                cardFrag.appendChild(article);
             });
+
+            nav.appendChild(navFrag);
+            container.appendChild(cardFrag);
+        }
+
+        /* ── Fetch & Render Markdown ─────────────────── */
+        async function hydrate() {
+            const cards = Array.from(document.querySelectorAll('.card[aria-busy]'));
+            await Promise.all(cards.map(async card => {
+                const topic = TOPICS.find(t => t.id === card.id);
+                if (!topic) return;
+                const mdEl = card.querySelector('.md');
+                try {
+                    const res = await fetch(topic.src, { cache: 'no-store' });
+                    if (!res.ok) throw new Error(res.status);
+                    mdEl.innerHTML = md(await res.text());
+                    wrapResources(mdEl);
+                } catch {
+                    mdEl.innerHTML = '<p>Unable to load content.</p>';
+                } finally {
+                    card.removeAttribute('aria-busy');
+                }
+            }));
+        }
+
+        /* ── Markdown parser ─────────────────────────── */
+        function md(raw) {
+            const lines = raw.replace(/\r\n/g, '\n').split('\n');
+            let out = '';
+            let buf = [];
+            let ul = false;
+
+            const flush = () => { if (buf.length) { out += `<p>${inline(buf.join(' '))}</p>`; buf = []; } };
+            const closeUl = () => { if (ul) { out += '</ul>'; ul = false; } };
+
+            for (const rawLine of lines) {
+                const line = rawLine.trim();
+                if (!line) { flush(); closeUl(); continue; }
+
+                const hm = line.match(/^(#{1,3})\s+(.*)$/);
+                if (hm) { flush(); closeUl(); const l = hm[1].length; out += `<h${l}>${inline(hm[2])}</h${l}>`; continue; }
+
+                const lm = rawLine.match(/^\s*[-*]\s+(.*)$/);
+                if (lm) { flush(); if (!ul) { out += '<ul>'; ul = true; } out += `<li>${inline(lm[1])}</li>`; continue; }
+
+                buf.push(line);
+            }
+            flush();
+            closeUl();
+            return out;
+        }
+
+        function inline(t) {
+            let s = esc(t);
+            s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+            s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+            return s;
+        }
+
+        function esc(v) {
+            return v.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+        }
+
+        /* ── Wrap Resources sections ─────────────────── */
+        function wrapResources(el) {
+            el.querySelectorAll('h2').forEach(h => {
+                if (h.textContent.trim().toLowerCase() !== 'resources') return;
+                const wrap = document.createElement('section');
+                wrap.className = 'resources-block';
+                h.parentNode.insertBefore(wrap, h);
+                let cur = h;
+                while (cur) {
+                    const next = cur.nextElementSibling;
+                    wrap.appendChild(cur);
+                    if (!next || next.tagName === 'H2') break;
+                    cur = next;
+                }
+            });
+        }
+
+        /* ── Sticky nav offset ───────────────────────── */
+        function measureNav() {
+            const bar = document.querySelector('.topbar');
+            if (bar) document.documentElement.style.setProperty('--nav-h', bar.offsetHeight + 'px');
+        }
+
+        /* ── Scroll-reveal cards ─────────────────────── */
+        function initReveal() {
+            if (!('IntersectionObserver' in window)) {
+                document.querySelectorAll('.card').forEach(c => c.classList.add('visible'));
+                return;
+            }
+            const io = new IntersectionObserver((entries, obs) => {
+                entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+            }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+            document.querySelectorAll('.card').forEach(c => io.observe(c));
+        }
+
+        /* ── Active nav tracking ─────────────────────── */
+        function initActiveNav() {
+            if (!('IntersectionObserver' in window)) return;
+            const links = Array.from(nav.querySelectorAll('a[data-target]'));
+            const sections = links.map(l => document.getElementById(l.dataset.target)).filter(Boolean);
+            let clickLock = false;
+
+            const setActive = id => {
+                links.forEach(l => {
+                    const on = l.dataset.target === id;
+                    l.classList.toggle('active', on);
+                    on ? l.setAttribute('aria-current', 'true') : l.removeAttribute('aria-current');
+                    if (on) l.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+                });
+            };
+
+            const io = new IntersectionObserver(entries => {
+                if (clickLock) return;
+                const vis = entries.filter(e => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+                if (vis.length) setActive(vis[0].target.id);
+            }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
+
+            sections.forEach(s => io.observe(s));
+
+            // Click handler
+            nav.addEventListener('click', e => {
+                const a = e.target.closest('a[data-target]');
+                if (!a) return;
+                e.preventDefault();
+                const target = document.getElementById(a.dataset.target);
+                if (!target) return;
+                clickLock = true;
+                setActive(a.dataset.target);
+                scrollToCard(target);
+                history.replaceState(null, '', `#${a.dataset.target}`);
+                setTimeout(() => { clickLock = false; }, 1000);
+            });
+        }
+
+        /* ── Scroll helper ───────────────────────────── */
+        function scrollToCard(el) {
+            const bar = document.querySelector('.topbar');
+            const gap = 20;
+            const top = el.getBoundingClientRect().top + window.scrollY - (bar ? bar.offsetHeight : 0) - gap;
+            window.scrollTo({ top, behavior: 'smooth' });
+        }
+
+        /* ── Initial hash ────────────────────────────── */
+        function jumpHash() {
+            const { hash } = window.location;
+            if (!hash) return;
+            const el = document.querySelector(hash);
+            if (el) requestAnimationFrame(() => scrollToCard(el));
+        }
+
+        /* ── Theme toggle ─────────────────────────────── */
+        const ICONS = {
+            dark: '<path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/>',
+            light: '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>',
+            system: '<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>'
+        };
+        const MODES = ['system', 'dark', 'light'];
+        const themeBtn = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+
+        function getPreferred() {
+            return localStorage.getItem('fdx-theme') || 'system';
+        }
+
+        function resolveTheme(mode) {
+            if (mode === 'system') return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+            return mode;
+        }
+
+        function applyTheme(mode) {
+            const resolved = resolveTheme(mode);
+            document.documentElement.classList.toggle('light', resolved === 'light');
+            themeIcon.innerHTML = ICONS[mode];
+            themeBtn.setAttribute('aria-label', `Theme: ${mode}`);
+        }
+
+        function initTheme() {
+            applyTheme(getPreferred());
+            themeBtn.addEventListener('click', () => {
+                const cur = getPreferred();
+                const next = MODES[(MODES.indexOf(cur) + 1) % MODES.length];
+                localStorage.setItem('fdx-theme', next);
+                applyTheme(next);
+            });
+            window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
+                if (getPreferred() === 'system') applyTheme('system');
+            });
+        }
+
+        /* ── Boot ────────────────────────────────────── */
+        document.addEventListener('DOMContentLoaded', async () => {
+            initTheme();
+            build();
+            measureNav();
+            window.addEventListener('resize', measureNav, { passive: true });
+            await hydrate();
+            initReveal();
+            initActiveNav();
+            jumpHash();
         });
-
-        function handleInitialHash() {
-            const hash = window.location.hash;
-            if (hash) {
-                const target = document.querySelector(hash);
-                if (target) {
-                    // Small delay to ensure sticky metrics are calculated
-                    setTimeout(() => {
-                        const headerHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 0;
-                        const navHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-height')) || 0;
-                        const offset = headerHeight + navHeight + 24;
-                        const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
-                        window.scrollTo({ top: targetPosition, behavior: 'smooth' });
-                    }, 100);
-                }
-            }
-        }
-
-        function hydrateFrontierCards() {
-            document.querySelectorAll('.frontier-card[data-source]').forEach(card => {
-                const source = card.dataset.source;
-                const container = card.querySelector('.markdown-content');
-
-                if (!source || !container) {
-                    return;
-                }
-
-                fetch(source)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`Failed to load ${source}`);
-                        }
-                        return response.text();
-                    })
-                    .then(text => {
-                        container.innerHTML = window.marked ? marked.parse(text) : text;
-                        enhanceResourceSections(container);
-                        card.removeAttribute('aria-busy');
-                    })
-                    .catch(error => {
-                        console.error(error);
-                        container.innerHTML = '<p class="loading-copy">Unable to load this content right now.</p>';
-                        card.removeAttribute('aria-busy');
-                    });
-            });
-        }
-
-        function enhanceResourceSections(container) {
-            container.querySelectorAll('h2').forEach(heading => {
-                if (heading.textContent.trim().toLowerCase() === 'resources') {
-                    const wrapper = document.createElement('section');
-                    wrapper.className = 'resources';
-                    heading.parentNode.insertBefore(wrapper, heading);
-
-                    let cursor = heading;
-                    while (cursor) {
-                        const next = cursor.nextElementSibling;
-                        wrapper.appendChild(cursor);
-
-                        if (!next || next.tagName === 'H2') {
-                            break;
-                        }
-
-                        cursor = next;
-                    }
-                }
-            });
-        }
-
-        function initSectionObserver() {
-            const navLinks = document.querySelectorAll('nav a');
-            const sections = Array.from(navLinks).map(link => document.querySelector(link.getAttribute('href')));
-            let activeFromClick = false;
-
-            // Handle click events on nav links
-            navLinks.forEach((link, index) => {
-                link.addEventListener('click', (e) => {
-                    // Mark that we just clicked a link
-                    activeFromClick = true;
-                    
-                    // Remove active from all links
-                    navLinks.forEach(l => l.classList.remove('active'));
-                    
-                    // Add active to clicked link
-                    link.classList.add('active');
-                    
-                    // Reset the click flag after scrolling completes
-                    setTimeout(() => {
-                        activeFromClick = false;
-                    }, 1000);
-                });
-            });
-
-            const observer = new IntersectionObserver(entries => {
-                // Don't update based on scroll if we just clicked a link
-                if (activeFromClick) {
-                    return;
-                }
-                
-                entries.forEach(entry => {
-                    const index = sections.indexOf(entry.target);
-                    if (index !== -1) {
-                        navLinks[index].classList.toggle('active', entry.isIntersecting);
-                    }
-                });
-            }, {
-                rootMargin: '-45% 0px -45% 0px'
-            });
-
-            sections.forEach(section => {
-                if (section) {
-                    observer.observe(section);
-                }
-            });
-        }
-
-        function updateStickyMetrics() {
-            const header = document.querySelector('header');
-            const nav = document.querySelector('nav');
-
-            const headerHeight = header ? header.getBoundingClientRect().height : 0;
-            const navHeight = nav ? nav.getBoundingClientRect().height : 0;
-
-            document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
-            document.documentElement.style.setProperty('--nav-height', `${navHeight}px`);
-        }
+    })();
     </script>
 </body>
 </html>

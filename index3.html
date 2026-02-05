@@ -1,0 +1,1006 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FDX | Frontier Signal Atlas</title>
+    <style>
+        :root {
+            --bg: #eef3fb;
+            --bg-soft: #f7fafe;
+            --panel: rgba(255, 255, 255, 0.78);
+            --panel-strong: rgba(255, 255, 255, 0.92);
+            --line: rgba(24, 49, 83, 0.14);
+            --line-strong: rgba(16, 42, 73, 0.26);
+            --text: #10243c;
+            --muted: #4b6380;
+            --accent: #0085c7;
+            --accent-strong: #0066ab;
+            --accent-soft: rgba(0, 133, 199, 0.12);
+            --ok: #007b74;
+            --shadow-soft: 0 12px 32px rgba(20, 43, 74, 0.1);
+            --shadow-strong: 0 26px 60px rgba(18, 42, 72, 0.14);
+            --radius-xl: 28px;
+            --radius-lg: 20px;
+            --radius-md: 14px;
+            --content-max: 1240px;
+            --scroll-offset: 126px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Outfit", "Sora", "IBM Plex Sans", "Segoe UI", sans-serif;
+            color: var(--text);
+            line-height: 1.55;
+            background:
+                radial-gradient(1000px 650px at -10% -18%, rgba(95, 207, 255, 0.3), transparent 58%),
+                radial-gradient(760px 560px at 105% -14%, rgba(109, 236, 215, 0.28), transparent 56%),
+                linear-gradient(176deg, var(--bg) 0%, var(--bg-soft) 54%, #edf4fc 100%);
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+            background-image:
+                linear-gradient(to right, rgba(16, 49, 83, 0.06) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(16, 49, 83, 0.06) 1px, transparent 1px);
+            background-size: 42px 42px;
+            mask-image: radial-gradient(circle at 50% 28%, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.14));
+        }
+
+        .site-wrap {
+            width: min(100%, var(--content-max));
+            margin: 0 auto;
+            padding: clamp(12px, 2.2vw, 26px);
+            padding-bottom: 30px;
+        }
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-xl);
+            background:
+                linear-gradient(125deg, rgba(255, 255, 255, 0.88) 0%, rgba(244, 251, 255, 0.9) 55%, rgba(236, 250, 248, 0.94) 100%);
+            box-shadow: var(--shadow-strong);
+            padding: clamp(20px, 3vw, 34px);
+            margin-bottom: 16px;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: auto -140px -140px auto;
+            width: 320px;
+            height: 320px;
+            border-radius: 999px;
+            background: radial-gradient(circle, rgba(0, 133, 199, 0.24) 0%, rgba(0, 133, 199, 0) 72%);
+            pointer-events: none;
+        }
+
+        .kicker {
+            margin: 0 0 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: #1b4f79;
+        }
+
+        .hero h1 {
+            margin: 0;
+            font-size: clamp(1.8rem, 4.2vw, 3rem);
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+            text-wrap: balance;
+        }
+
+        .hero-copy {
+            max-width: 72ch;
+            margin: 12px 0 0;
+            color: var(--muted);
+            font-size: clamp(0.98rem, 1.35vw, 1.08rem);
+        }
+
+        .metrics {
+            list-style: none;
+            margin: 18px 0 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            max-width: 620px;
+        }
+
+        .metrics li {
+            border: 1px solid rgba(17, 53, 88, 0.17);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.76);
+            padding: 10px 12px;
+            box-shadow: 0 8px 22px rgba(21, 43, 73, 0.08);
+        }
+
+        .metrics strong {
+            display: block;
+            font-size: 1.06rem;
+            letter-spacing: -0.015em;
+        }
+
+        .metrics span {
+            display: block;
+            margin-top: 1px;
+            font-size: 0.74rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #3f5d81;
+            font-weight: 700;
+        }
+
+        .app-shell {
+            display: grid;
+            grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+            gap: 14px;
+            align-items: start;
+        }
+
+        .navigator {
+            position: sticky;
+            top: 14px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            background: var(--panel);
+            backdrop-filter: blur(16px);
+            box-shadow: var(--shadow-soft);
+            padding: 14px;
+        }
+
+        .navigator-head {
+            margin-bottom: 10px;
+        }
+
+        .navigator-head h2 {
+            margin: 0;
+            font-size: 1.05rem;
+            letter-spacing: -0.01em;
+        }
+
+        .navigator-head p {
+            margin: 4px 0 0;
+            color: var(--muted);
+            font-size: 0.86rem;
+        }
+
+        .control-label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #3f6088;
+            font-weight: 700;
+        }
+
+        .topic-select {
+            width: 100%;
+            border-radius: 10px;
+            border: 1px solid rgba(16, 50, 84, 0.24);
+            background: rgba(255, 255, 255, 0.94);
+            color: var(--text);
+            padding: 9px 10px;
+            font: inherit;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+
+        .stepper {
+            margin-top: 8px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .stepper button {
+            border: 1px solid rgba(17, 53, 88, 0.22);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #14395f;
+            font-weight: 700;
+            font-size: 0.83rem;
+            padding: 8px 10px;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .stepper button:hover,
+        .stepper button:focus-visible {
+            border-color: rgba(0, 102, 171, 0.45);
+            background: rgba(234, 247, 255, 0.96);
+            transform: translateY(-1px);
+            outline: none;
+        }
+
+        .topic-rail {
+            list-style: none;
+            margin: 12px 0 0;
+            padding: 0;
+            display: grid;
+            gap: 7px;
+        }
+
+        .topic-rail button {
+            width: 100%;
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(16, 50, 84, 0.16);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 9px 9px;
+            text-align: left;
+            color: #173b63;
+            cursor: pointer;
+            transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .topic-rail button:hover,
+        .topic-rail button:focus-visible {
+            border-color: rgba(0, 102, 171, 0.44);
+            background: rgba(231, 246, 255, 0.95);
+            transform: translateX(2px);
+            outline: none;
+        }
+
+        .topic-rail button.is-active {
+            border-color: transparent;
+            background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+            color: #fff;
+            box-shadow: 0 12px 24px rgba(0, 102, 171, 0.32);
+        }
+
+        .topic-index {
+            width: 28px;
+            height: 28px;
+            border-radius: 9px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 800;
+            background: rgba(20, 64, 106, 0.12);
+            border: 1px solid rgba(20, 64, 106, 0.2);
+            color: inherit;
+        }
+
+        .topic-rail button.is-active .topic-index {
+            background: rgba(255, 255, 255, 0.18);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .topic-name {
+            font-size: 0.84rem;
+            line-height: 1.3;
+            font-weight: 700;
+            text-wrap: balance;
+        }
+
+        .topic-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 999px;
+            background: rgba(19, 70, 116, 0.42);
+        }
+
+        .topic-rail button.is-active .topic-dot {
+            background: rgba(255, 255, 255, 0.92);
+        }
+
+        .topic-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .topic-card {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            background: var(--panel-strong);
+            box-shadow: 0 10px 24px rgba(22, 45, 76, 0.08);
+            scroll-margin-top: var(--scroll-offset);
+            content-visibility: auto;
+            contain-intrinsic-size: 760px;
+        }
+
+        .topic-card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            height: 3px;
+            background: linear-gradient(90deg, rgba(0, 133, 199, 0), rgba(0, 133, 199, 0.9), rgba(0, 123, 116, 0.5));
+        }
+
+        .card-shell {
+            padding: clamp(14px, 2vw, 24px);
+        }
+
+        .card-head {
+            margin-bottom: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px 12px;
+            justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 1px solid rgba(16, 42, 73, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .card-head h3 {
+            margin: 0;
+            font-size: clamp(1.16rem, 2.2vw, 1.52rem);
+            line-height: 1.16;
+            letter-spacing: -0.018em;
+        }
+
+        .card-meta {
+            margin: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.76rem;
+            color: #3f6183;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            font-weight: 700;
+        }
+
+        .card-meta code {
+            font-family: "IBM Plex Mono", "Consolas", monospace;
+            font-size: 0.76rem;
+            color: #2f4f74;
+            border: 1px solid rgba(17, 57, 96, 0.22);
+            background: rgba(0, 133, 199, 0.09);
+            border-radius: 8px;
+            padding: 1px 7px;
+        }
+
+        .loading-state {
+            margin: 0;
+            font-weight: 700;
+            color: transparent;
+            background: linear-gradient(100deg, #6e88a8 30%, #2f5d8f 50%, #6e88a8 70%);
+            background-size: 230% 100%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            animation: shimmer 1.55s linear infinite;
+        }
+
+        .markdown-content {
+            color: #1c3758;
+            font-size: 0.99rem;
+        }
+        .markdown-content h1,
+        .markdown-content h2,
+        .markdown-content h3 {
+            color: #0f2c4b;
+            line-height: 1.24;
+            letter-spacing: -0.01em;
+        }
+
+        .markdown-content h1 {
+            margin: 0 0 14px;
+            font-size: 1.42rem;
+        }
+
+        .markdown-content h2 {
+            margin: 24px 0 10px;
+            font-size: 1.08rem;
+        }
+
+        .markdown-content h3 {
+            margin: 18px 0 8px;
+            font-size: 0.99rem;
+        }
+
+        .markdown-content p {
+            margin: 0 0 12px;
+        }
+
+        .markdown-content ul,
+        .markdown-content ol {
+            margin: 0 0 14px;
+            padding-left: 22px;
+        }
+
+        .markdown-content li + li {
+            margin-top: 8px;
+        }
+
+        .markdown-content a {
+            color: #005d95;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(0, 93, 149, 0.25);
+            font-weight: 700;
+        }
+
+        .markdown-content a:hover,
+        .markdown-content a:focus-visible {
+            color: #003f69;
+            border-bottom-color: rgba(0, 63, 105, 0.5);
+            outline: none;
+        }
+
+        .markdown-content code {
+            font-family: "IBM Plex Mono", "Consolas", monospace;
+            font-size: 0.89em;
+            border-radius: 6px;
+            border: 1px solid rgba(14, 52, 89, 0.17);
+            background: rgba(16, 69, 117, 0.09);
+            padding: 0.09em 0.36em;
+        }
+
+        .markdown-content blockquote {
+            margin: 0 0 12px;
+            border-left: 3px solid rgba(0, 102, 171, 0.4);
+            padding: 2px 0 2px 12px;
+            color: #32557a;
+            font-style: italic;
+        }
+
+        .resource-panel {
+            margin-top: 18px;
+            border: 1px solid rgba(0, 102, 171, 0.26);
+            border-radius: 12px;
+            background: rgba(230, 246, 255, 0.78);
+            padding: 14px 14px 5px;
+        }
+
+        .resource-panel h2 {
+            margin-top: 0;
+        }
+
+        .site-footer {
+            margin-top: 22px;
+            padding: 10px;
+            text-align: center;
+            color: #496584;
+            font-size: 0.88rem;
+        }
+
+        .js .topic-card {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.36s ease, transform 0.36s ease;
+        }
+
+        .js .topic-card.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes shimmer {
+            from { background-position: 220% 0; }
+            to { background-position: -18% 0; }
+        }
+
+        @media (max-width: 980px) {
+            .app-shell {
+                grid-template-columns: 1fr;
+            }
+
+            .navigator {
+                position: sticky;
+                top: 10px;
+                z-index: 40;
+            }
+
+            .topic-rail {
+                display: flex;
+                overflow-x: auto;
+                gap: 8px;
+                padding-bottom: 2px;
+                scrollbar-width: thin;
+            }
+
+            .topic-rail li {
+                flex: 0 0 auto;
+                width: min(260px, 72vw);
+            }
+
+            .topic-card {
+                scroll-margin-top: 208px;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .site-wrap {
+                padding: 10px;
+            }
+
+            .hero {
+                border-radius: 20px;
+                padding: 16px;
+            }
+
+            .kicker {
+                font-size: 0.72rem;
+            }
+
+            .metrics {
+                grid-template-columns: 1fr;
+                max-width: none;
+            }
+
+            .navigator {
+                border-radius: 16px;
+                padding: 12px;
+            }
+
+            .topic-card {
+                border-radius: 15px;
+            }
+
+            .card-shell {
+                padding: 13px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            .js .topic-card,
+            .js .topic-card.is-visible,
+            .topic-rail button,
+            .stepper button,
+            .loading-state {
+                transition: none;
+                animation: none;
+                transform: none;
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="site-wrap">
+        <header class="hero">
+            <p class="kicker">FDX / Frontier Signal Atlas</p>
+            <h1>Frontier Disambiguation Experience</h1>
+            <p class="hero-copy">
+                A fast, structured view of how "Frontier" is used across firms, programs, partners, and AI contexts.
+                Use the navigator to move between topics and compare terminology quickly.
+            </p>
+            <ul class="metrics" aria-label="Page status">
+                <li><strong id="metricTopics">0</strong><span>Topic Files</span></li>
+                <li><strong id="metricLoaded">0</strong><span>Loaded</span></li>
+                <li><strong id="metricStatus">Idle</strong><span>Status</span></li>
+            </ul>
+        </header>
+
+        <section class="app-shell">
+            <aside class="navigator" aria-label="Topic navigator">
+                <div class="navigator-head">
+                    <h2>Navigator</h2>
+                    <p>Jump directly, or step through sequentially.</p>
+                </div>
+                <label for="topicSelect" class="control-label">Jump To Topic</label>
+                <select id="topicSelect" class="topic-select"></select>
+                <div class="stepper">
+                    <button type="button" id="prevTopic">Previous</button>
+                    <button type="button" id="nextTopic">Next</button>
+                </div>
+                <ol id="topicRail" class="topic-rail"></ol>
+            </aside>
+
+            <main id="topicGrid" class="topic-grid"></main>
+        </section>
+
+        <footer class="site-footer">Created by Guy Gregory and GitHub Copilot</footer>
+    </div>
+
+    <script>
+        document.documentElement.classList.add("js");
+
+        const TOPICS = [
+            { id: "frontier-firm", label: "Frontier Firm", source: "frontierfirm.md" },
+            { id: "frontier-program", label: "Frontier Program", source: "frontierprogram.md" },
+            { id: "frontier-partner", label: "Frontier Partner Badge", source: "frontierpartner.md" },
+            { id: "frontier-distributor", label: "Frontier Distributor Designation", source: "frontierdistributor.md" },
+            { id: "frontier-ai", label: "Frontier AI", source: "frontierai.md" },
+            { id: "frontier-model-forum", label: "Frontier Model Forum", source: "frontiermodelforum.md" },
+            { id: "openai-frontier", label: "OpenAI Frontier", source: "openaifrontier.md" }
+        ];
+
+        const topicSelect = document.getElementById("topicSelect");
+        const topicRail = document.getElementById("topicRail");
+        const topicGrid = document.getElementById("topicGrid");
+        const prevButton = document.getElementById("prevTopic");
+        const nextButton = document.getElementById("nextTopic");
+        const metricTopics = document.getElementById("metricTopics");
+        const metricLoaded = document.getElementById("metricLoaded");
+        const metricStatus = document.getElementById("metricStatus");
+
+        let currentIndex = 0;
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            buildShell();
+            bindNavigator();
+            updateScrollOffset();
+            window.addEventListener("resize", updateScrollOffset, { passive: true });
+
+            updateMetrics(0, "Loading");
+            await hydrateTopicCards();
+            decorateResourceSections();
+            initRevealObserver();
+            initActiveSectionObserver();
+            jumpToInitialHash();
+            updateMetrics(TOPICS.length, "Ready");
+        });
+
+        function buildShell() {
+            metricTopics.textContent = String(TOPICS.length);
+
+            const selectFragment = document.createDocumentFragment();
+            const railFragment = document.createDocumentFragment();
+            const cardsFragment = document.createDocumentFragment();
+
+            TOPICS.forEach((topic, index) => {
+                const option = document.createElement("option");
+                option.value = topic.id;
+                option.textContent = `${String(index + 1).padStart(2, "0")} / ${topic.label}`;
+                selectFragment.appendChild(option);
+
+                const railItem = document.createElement("li");
+                const railButton = document.createElement("button");
+                railButton.type = "button";
+                railButton.dataset.target = topic.id;
+                railButton.innerHTML = `
+                    <span class="topic-index">${String(index + 1).padStart(2, "0")}</span>
+                    <span class="topic-name">${escapeHtml(topic.label)}</span>
+                    <span class="topic-dot" aria-hidden="true"></span>
+                `;
+                railItem.appendChild(railButton);
+                railFragment.appendChild(railItem);
+
+                const article = document.createElement("article");
+                article.className = "topic-card";
+                article.id = topic.id;
+                article.dataset.source = topic.source;
+                article.setAttribute("aria-busy", "true");
+                article.innerHTML = `
+                    <div class="card-shell">
+                        <header class="card-head">
+                            <h3>${escapeHtml(topic.label)}</h3>
+                            <p class="card-meta">
+                                <span>Topic ${String(index + 1).padStart(2, "0")}</span>
+                                <code>${escapeHtml(topic.source)}</code>
+                            </p>
+                        </header>
+                        <div class="markdown-content">
+                            <p class="loading-state">Loading ${escapeHtml(topic.label)}...</p>
+                        </div>
+                    </div>
+                `;
+                cardsFragment.appendChild(article);
+            });
+
+            topicSelect.appendChild(selectFragment);
+            topicRail.appendChild(railFragment);
+            topicGrid.appendChild(cardsFragment);
+            setActiveTopic(TOPICS[0].id);
+        }
+
+        function bindNavigator() {
+            topicSelect.addEventListener("change", () => {
+                goToTopic(topicSelect.value);
+            });
+
+            topicRail.addEventListener("click", (event) => {
+                const targetButton = event.target.closest("button[data-target]");
+                if (!targetButton) {
+                    return;
+                }
+                goToTopic(targetButton.dataset.target);
+            });
+
+            prevButton.addEventListener("click", () => {
+                const nextIndex = (currentIndex - 1 + TOPICS.length) % TOPICS.length;
+                goToTopic(TOPICS[nextIndex].id);
+            });
+
+            nextButton.addEventListener("click", () => {
+                const nextIndex = (currentIndex + 1) % TOPICS.length;
+                goToTopic(TOPICS[nextIndex].id);
+            });
+        }
+
+        async function hydrateTopicCards() {
+            const cards = Array.from(document.querySelectorAll(".topic-card[data-source]"));
+            let loadedCount = 0;
+
+            await Promise.all(cards.map(async (card) => {
+                const source = card.dataset.source;
+                const contentTarget = card.querySelector(".markdown-content");
+
+                if (!source || !contentTarget) {
+                    card.removeAttribute("aria-busy");
+                    return;
+                }
+
+                try {
+                    const response = await fetch(source, { cache: "no-store" });
+                    if (!response.ok) {
+                        throw new Error(`Failed to load ${source}`);
+                    }
+
+                    const markdown = await response.text();
+                    contentTarget.innerHTML = markdownToHtml(markdown);
+
+                    const firstHeading = contentTarget.querySelector("h1");
+                    if (firstHeading) {
+                        firstHeading.remove();
+                    }
+                } catch (error) {
+                    console.error(error);
+                    contentTarget.innerHTML = "<p>Unable to load this topic right now.</p>";
+                } finally {
+                    loadedCount += 1;
+                    updateMetrics(loadedCount, "Loading");
+                    card.removeAttribute("aria-busy");
+                }
+            }));
+        }
+
+        function markdownToHtml(markdown) {
+            const lines = markdown.replace(/\r\n/g, "\n").split("\n");
+            let html = "";
+            let paragraphLines = [];
+            let listType = null;
+
+            const flushParagraph = () => {
+                if (!paragraphLines.length) {
+                    return;
+                }
+                html += `<p>${inlineMarkup(paragraphLines.join(" "))}</p>`;
+                paragraphLines = [];
+            };
+
+            const closeList = () => {
+                if (!listType) {
+                    return;
+                }
+                html += `</${listType}>`;
+                listType = null;
+            };
+
+            lines.forEach((rawLine) => {
+                const line = rawLine.trim();
+
+                if (!line) {
+                    flushParagraph();
+                    closeList();
+                    return;
+                }
+
+                const headingMatch = line.match(/^(#{1,3})\s+(.*)$/);
+                if (headingMatch) {
+                    flushParagraph();
+                    closeList();
+                    const level = headingMatch[1].length;
+                    html += `<h${level}>${inlineMarkup(headingMatch[2])}</h${level}>`;
+                    return;
+                }
+
+                const unorderedMatch = rawLine.match(/^\s*[-*]\s+(.*)$/);
+                if (unorderedMatch) {
+                    flushParagraph();
+                    if (listType !== "ul") {
+                        closeList();
+                        html += "<ul>";
+                        listType = "ul";
+                    }
+                    html += `<li>${inlineMarkup(unorderedMatch[1])}</li>`;
+                    return;
+                }
+
+                const orderedMatch = rawLine.match(/^\s*\d+\.\s+(.*)$/);
+                if (orderedMatch) {
+                    flushParagraph();
+                    if (listType !== "ol") {
+                        closeList();
+                        html += "<ol>";
+                        listType = "ol";
+                    }
+                    html += `<li>${inlineMarkup(orderedMatch[1])}</li>`;
+                    return;
+                }
+
+                const quoteMatch = rawLine.match(/^\s*>\s?(.*)$/);
+                if (quoteMatch) {
+                    flushParagraph();
+                    closeList();
+                    html += `<blockquote>${inlineMarkup(quoteMatch[1])}</blockquote>`;
+                    return;
+                }
+
+                paragraphLines.push(line);
+            });
+
+            flushParagraph();
+            closeList();
+            return html;
+        }
+
+        function inlineMarkup(text) {
+            let value = escapeHtml(text);
+            value = value.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, "<a href=\"$2\" target=\"_blank\" rel=\"noopener noreferrer\">$1</a>");
+            value = value.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+            value = value.replace(/`([^`]+)`/g, "<code>$1</code>");
+            return value;
+        }
+
+        function escapeHtml(value) {
+            return value
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/\"/g, "&quot;")
+                .replace(/'/g, "&#39;");
+        }
+
+        function decorateResourceSections() {
+            document.querySelectorAll(".markdown-content").forEach((container) => {
+                const headings = Array.from(container.querySelectorAll("h2"));
+                headings.forEach((heading) => {
+                    if (heading.textContent.trim().toLowerCase() !== "resources") {
+                        return;
+                    }
+
+                    const panel = document.createElement("section");
+                    panel.className = "resource-panel";
+                    heading.parentNode.insertBefore(panel, heading);
+
+                    let cursor = heading;
+                    while (cursor) {
+                        const next = cursor.nextElementSibling;
+                        panel.appendChild(cursor);
+                        if (!next || next.tagName === "H2") {
+                            break;
+                        }
+                        cursor = next;
+                    }
+                });
+            });
+        }
+
+        function initRevealObserver() {
+            const cards = document.querySelectorAll(".topic-card");
+
+            if (!("IntersectionObserver" in window)) {
+                cards.forEach((card) => card.classList.add("is-visible"));
+                return;
+            }
+
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) {
+                        return;
+                    }
+                    entry.target.classList.add("is-visible");
+                    observer.unobserve(entry.target);
+                });
+            }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+
+            cards.forEach((card) => revealObserver.observe(card));
+        }
+
+        function initActiveSectionObserver() {
+            if (!("IntersectionObserver" in window)) {
+                return;
+            }
+
+            const sections = TOPICS
+                .map((topic) => document.getElementById(topic.id))
+                .filter(Boolean);
+
+            const observer = new IntersectionObserver((entries) => {
+                const visible = entries
+                    .filter((entry) => entry.isIntersecting)
+                    .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+
+                if (!visible.length) {
+                    return;
+                }
+
+                setActiveTopic(visible[0].target.id, false);
+            }, {
+                rootMargin: "-38% 0px -48% 0px",
+                threshold: 0
+            });
+
+            sections.forEach((section) => observer.observe(section));
+        }
+
+        function goToTopic(topicId) {
+            const section = document.getElementById(topicId);
+            if (!section) {
+                return;
+            }
+
+            section.scrollIntoView({ behavior: "smooth", block: "start" });
+            history.replaceState(null, "", `#${topicId}`);
+            setActiveTopic(topicId);
+        }
+
+        function setActiveTopic(topicId, syncSelect = true) {
+            const index = TOPICS.findIndex((topic) => topic.id === topicId);
+            if (index < 0) {
+                return;
+            }
+
+            currentIndex = index;
+
+            const railButtons = topicRail.querySelectorAll("button[data-target]");
+            railButtons.forEach((button) => {
+                const isActive = button.dataset.target === topicId;
+                button.classList.toggle("is-active", isActive);
+                if (isActive) {
+                    button.setAttribute("aria-current", "true");
+                } else {
+                    button.removeAttribute("aria-current");
+                }
+            });
+
+            if (syncSelect) {
+                topicSelect.value = topicId;
+            }
+        }
+
+        function jumpToInitialHash() {
+            const { hash } = window.location;
+            if (!hash) {
+                return;
+            }
+
+            const section = document.querySelector(hash);
+            if (!section) {
+                return;
+            }
+
+            const id = hash.slice(1);
+            setActiveTopic(id);
+
+            requestAnimationFrame(() => {
+                section.scrollIntoView({ behavior: "smooth", block: "start" });
+            });
+        }
+
+        function updateScrollOffset() {
+            const navigator = document.querySelector(".navigator");
+            const offset = navigator ? navigator.getBoundingClientRect().height + 22 : 120;
+            document.documentElement.style.setProperty("--scroll-offset", `${Math.round(offset)}px`);
+        }
+
+        function updateMetrics(loadedCount, status) {
+            metricLoaded.textContent = String(loadedCount);
+            metricStatus.textContent = status;
+            metricStatus.style.color = status === "Ready" ? "var(--ok)" : "inherit";
+        }
+    </script>
+</body>
+</html>

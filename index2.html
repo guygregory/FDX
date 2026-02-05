@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FDX - Frontier Disambiguation Experience</title>
+    <style>
+        :root {
+            --bg-a: #e9f4ff;
+            --bg-b: #f8fbff;
+            --surface: rgba(255, 255, 255, 0.78);
+            --surface-strong: rgba(255, 255, 255, 0.96);
+            --text: #0f1e34;
+            --muted: #4d627e;
+            --line: rgba(24, 44, 78, 0.14);
+            --line-strong: rgba(24, 44, 78, 0.24);
+            --accent: #009fda;
+            --accent-strong: #0079c9;
+            --accent-soft: rgba(0, 159, 218, 0.14);
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --shadow: 0 18px 40px rgba(25, 49, 87, 0.14);
+            --content-max: 1160px;
+            --sticky-offset: 160px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            color: var(--text);
+            font-family: "Sora", "Manrope", "IBM Plex Sans", "Segoe UI", sans-serif;
+            line-height: 1.6;
+            background: radial-gradient(1200px 700px at 12% -10%, #d4efff 0%, transparent 60%),
+                        radial-gradient(1000px 620px at 94% 0%, #d9fff4 0%, transparent 55%),
+                        linear-gradient(180deg, var(--bg-a), var(--bg-b));
+        }
+
+        .ambient-grid {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background-image:
+                linear-gradient(to right, rgba(16, 35, 69, 0.06) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(16, 35, 69, 0.06) 1px, transparent 1px);
+            background-size: 38px 38px;
+            mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.2));
+        }
+
+        .page {
+            width: min(100%, var(--content-max));
+            margin: 0 auto;
+            padding: clamp(12px, 2.2vw, 20px);
+            padding-bottom: 40px;
+        }
+
+        .command-bar {
+            margin-top: 0;
+            position: sticky;
+            top: 12px;
+            z-index: 60;
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            background: rgba(248, 252, 255, 0.86);
+            backdrop-filter: blur(14px);
+            box-shadow: 0 8px 26px rgba(27, 49, 82, 0.09);
+            padding: 9px;
+        }
+
+        .bar-title {
+            margin: 2px 0 9px;
+            text-align: center;
+            font-size: clamp(1.72rem, 4.4vw, 2.48rem);
+            line-height: 1.08;
+            letter-spacing: -0.02em;
+            color: #0f2b4b;
+            text-wrap: balance;
+        }
+
+        .topic-nav {
+            margin-top: 0;
+            overflow: hidden;
+        }
+
+        .topic-nav ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            overflow-y: hidden;
+            width: 100%;
+            padding-bottom: 2px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .topic-nav ul::-webkit-scrollbar {
+            display: none;
+        }
+
+        .topic-nav li {
+            margin: 0;
+            flex: 0 0 auto;
+        }
+
+        .topic-nav a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: #16365b;
+            border: 1px solid rgba(18, 54, 91, 0.16);
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 999px;
+            padding: 7px 11px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            white-space: nowrap;
+            transition: background 0.2s ease, transform 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .topic-nav a::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(0, 121, 201, 0.42);
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .topic-nav a:hover,
+        .topic-nav a:focus-visible {
+            color: #08233e;
+            border-color: rgba(0, 121, 201, 0.48);
+            background: rgba(228, 247, 255, 0.95);
+            transform: translateY(-1px);
+            outline: none;
+        }
+
+        .topic-nav a.is-active {
+            color: white;
+            border-color: transparent;
+            background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+            box-shadow: 0 10px 20px rgba(0, 121, 201, 0.32);
+        }
+
+        .topic-nav a.is-active::before {
+            background: rgba(255, 255, 255, 0.9);
+            transform: scale(1.2);
+        }
+
+        main {
+            margin-top: 14px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .topic-card {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-md);
+            background: var(--surface-strong);
+            box-shadow: 0 10px 24px rgba(25, 49, 87, 0.08);
+            scroll-margin-top: var(--sticky-offset);
+            content-visibility: auto;
+            contain-intrinsic-size: 600px;
+        }
+
+        .topic-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 3px;
+            background: linear-gradient(90deg, rgba(0, 159, 218, 0.06), rgba(0, 159, 218, 0.85), rgba(0, 121, 201, 0.2));
+        }
+
+        .topic-shell {
+            padding: clamp(16px, 2.4vw, 24px);
+        }
+
+        .card-head {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 14px;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(16, 35, 69, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .card-head h2 {
+            margin: 0;
+            font-size: clamp(1.2rem, 2.6vw, 1.6rem);
+            line-height: 1.2;
+            letter-spacing: -0.015em;
+        }
+
+        .card-meta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #3f6387;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            font-weight: 700;
+        }
+
+        .card-meta code {
+            font-family: "IBM Plex Mono", "Consolas", monospace;
+            font-size: 0.76rem;
+            color: #2b4d73;
+            background: rgba(0, 121, 201, 0.09);
+            border: 1px solid rgba(0, 121, 201, 0.24);
+            border-radius: 8px;
+            padding: 2px 7px;
+        }
+
+        .markdown-content {
+            color: #1b324f;
+            font-size: 1rem;
+        }
+
+        .markdown-content h1,
+        .markdown-content h2,
+        .markdown-content h3 {
+            line-height: 1.25;
+            letter-spacing: -0.01em;
+            color: #0f2b4b;
+        }
+
+        .markdown-content h1 {
+            font-size: 1.45rem;
+            margin: 0 0 14px;
+        }
+
+        .markdown-content h2 {
+            margin: 24px 0 10px;
+            font-size: 1.08rem;
+        }
+
+        .markdown-content h3 {
+            margin: 18px 0 8px;
+            font-size: 0.99rem;
+        }
+
+        .markdown-content p {
+            margin: 0 0 12px;
+            color: #223d5f;
+        }
+
+        .markdown-content ul {
+            margin: 0 0 14px;
+            padding-left: 20px;
+        }
+
+        .markdown-content li + li {
+            margin-top: 8px;
+        }
+
+        .markdown-content a {
+            color: #006ba6;
+            font-weight: 700;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(0, 107, 166, 0.2);
+        }
+
+        .markdown-content a:hover,
+        .markdown-content a:focus-visible {
+            color: #004f7b;
+            border-bottom-color: rgba(0, 79, 123, 0.46);
+            outline: none;
+        }
+
+        .markdown-content code {
+            font-family: "IBM Plex Mono", "Consolas", monospace;
+            font-size: 0.9em;
+            background: rgba(20, 72, 122, 0.09);
+            border-radius: 6px;
+            padding: 0.1em 0.38em;
+        }
+
+        .loading-copy {
+            margin: 4px 0 0;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            color: transparent;
+            background: linear-gradient(100deg, #6f8bad 30%, #2c5888 50%, #6f8bad 70%);
+            background-size: 220% 100%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            animation: shimmer 1.6s linear infinite;
+        }
+
+        .resources {
+            margin-top: 18px;
+            padding: 14px 14px 4px;
+            border: 1px solid rgba(0, 121, 201, 0.22);
+            border-radius: 12px;
+            background: rgba(228, 247, 255, 0.76);
+        }
+
+        .resources h2 {
+            margin-top: 0;
+        }
+
+        .js .topic-card {
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 0.36s ease, transform 0.36s ease;
+        }
+
+        .js .topic-card.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        footer {
+            margin-top: 28px;
+            text-align: center;
+            color: #3c6084;
+            font-size: 0.9rem;
+            padding-bottom: 20px;
+        }
+
+        @keyframes shimmer {
+            from { background-position: 220% 0; }
+            to { background-position: -20% 0; }
+        }
+
+        @media (max-width: 800px) {
+            .command-bar {
+                top: 8px;
+            }
+        }
+
+        @media (max-width: 620px) {
+            .page {
+                padding: 10px;
+            }
+
+            .command-bar {
+                border-radius: 16px;
+                padding: 8px;
+            }
+
+            .bar-title {
+                margin-bottom: 8px;
+                font-size: clamp(1.36rem, 6.4vw, 1.86rem);
+                line-height: 1.1;
+            }
+
+            .topic-shell {
+                padding: 14px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            .js .topic-card,
+            .js .topic-card.is-visible,
+            .topic-nav a,
+            .loading-copy {
+                transition: none;
+                animation: none;
+                transform: none;
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient-grid" aria-hidden="true"></div>
+    <div class="page">
+        <section class="command-bar" aria-label="Section controls">
+            <h1 class="bar-title">Frontier Disambiguation Experience (FDX)</h1>
+            <nav class="topic-nav" aria-label="Frontier references">
+                <ul id="topicNav"></ul>
+            </nav>
+        </section>
+
+        <main id="topicContainer"></main>
+
+        <footer>Created by Guy Gregory and GitHub Copilot</footer>
+    </div>
+
+    <script>
+        document.documentElement.classList.add("js");
+
+        const TOPICS = [
+            { id: "frontier-firm", label: "Frontier Firm", source: "frontierfirm.md" },
+            { id: "frontier-program", label: "Frontier Program", source: "frontierprogram.md" },
+            { id: "frontier-partner", label: "Frontier Partner badge", source: "frontierpartner.md" },
+            { id: "frontier-distributor", label: "Frontier Distributor Designation", source: "frontierdistributor.md" },
+            { id: "frontier-ai", label: "Frontier AI", source: "frontierai.md" },
+            { id: "frontier-model-forum", label: "Frontier Model Forum", source: "frontiermodelforum.md" },
+            { id: "openai-frontier", label: "OpenAI Frontier", source: "openaifrontier.md" }
+        ];
+
+        const navElement = document.getElementById("topicNav");
+        const topicContainer = document.getElementById("topicContainer");
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            buildShell();
+            updateStickyOffset();
+            window.addEventListener("resize", updateStickyOffset, { passive: true });
+
+            await hydrateTopicCards();
+            styleResourceBlocks();
+            initVisibilityObserver();
+            initActiveNavObserver();
+            initSmoothNav();
+            jumpToInitialHash();
+        });
+
+        function buildShell() {
+            const navFragment = document.createDocumentFragment();
+            const cardsFragment = document.createDocumentFragment();
+
+            TOPICS.forEach((topic, index) => {
+                const navItem = document.createElement("li");
+                navItem.dataset.topic = topic.id;
+
+                const navLink = document.createElement("a");
+                navLink.href = `#${topic.id}`;
+                navLink.dataset.target = topic.id;
+                navLink.textContent = topic.label;
+
+                navItem.appendChild(navLink);
+                navFragment.appendChild(navItem);
+
+                const article = document.createElement("article");
+                article.className = "topic-card";
+                article.id = topic.id;
+                article.dataset.source = topic.source;
+                article.dataset.label = topic.label.toLowerCase();
+                article.setAttribute("aria-busy", "true");
+
+                article.innerHTML = `
+                    <div class="topic-shell">
+                        <header class="card-head">
+                            <h2>${topic.label}</h2>
+                            <p class="card-meta"><span>Topic ${String(index + 1).padStart(2, "0")}</span><code>${topic.source}</code></p>
+                        </header>
+                        <div class="markdown-content" aria-live="polite">
+                            <p class="loading-copy">Loading ${topic.label}...</p>
+                        </div>
+                    </div>
+                `;
+
+                cardsFragment.appendChild(article);
+            });
+
+            navElement.appendChild(navFragment);
+            topicContainer.appendChild(cardsFragment);
+        }
+
+        async function hydrateTopicCards() {
+            const cards = Array.from(document.querySelectorAll(".topic-card[data-source]"));
+
+            await Promise.all(cards.map(async (card) => {
+                const source = card.dataset.source;
+                const contentTarget = card.querySelector(".markdown-content");
+
+                if (!source || !contentTarget) {
+                    card.removeAttribute("aria-busy");
+                    return;
+                }
+
+                try {
+                    const response = await fetch(source, { cache: "no-store" });
+                    if (!response.ok) {
+                        throw new Error(`Failed to load ${source}`);
+                    }
+
+                    const markdown = await response.text();
+                    contentTarget.innerHTML = markdownToHtml(markdown);
+
+                    const firstHeading = contentTarget.querySelector("h1");
+                    if (firstHeading) {
+                        firstHeading.remove();
+                    }
+                } catch (error) {
+                    console.error(error);
+                    contentTarget.innerHTML = "<p>Unable to load this topic right now.</p>";
+                } finally {
+                    card.removeAttribute("aria-busy");
+                }
+            }));
+        }
+
+        function markdownToHtml(markdown) {
+            const lines = markdown.replace(/\r\n/g, "\n").split("\n");
+            let html = "";
+            let paragraphLines = [];
+            let inList = false;
+
+            const flushParagraph = () => {
+                if (!paragraphLines.length) {
+                    return;
+                }
+                html += `<p>${inlineMarkup(paragraphLines.join(" "))}</p>`;
+                paragraphLines = [];
+            };
+
+            const closeList = () => {
+                if (inList) {
+                    html += "</ul>";
+                    inList = false;
+                }
+            };
+
+            lines.forEach((rawLine) => {
+                const line = rawLine.trim();
+
+                if (!line) {
+                    flushParagraph();
+                    closeList();
+                    return;
+                }
+
+                const headingMatch = line.match(/^(#{1,3})\s+(.*)$/);
+                if (headingMatch) {
+                    flushParagraph();
+                    closeList();
+                    const level = headingMatch[1].length;
+                    html += `<h${level}>${inlineMarkup(headingMatch[2])}</h${level}>`;
+                    return;
+                }
+
+                const listMatch = rawLine.match(/^\s*[-*]\s+(.*)$/);
+                if (listMatch) {
+                    flushParagraph();
+                    if (!inList) {
+                        html += "<ul>";
+                        inList = true;
+                    }
+                    html += `<li>${inlineMarkup(listMatch[1])}</li>`;
+                    return;
+                }
+
+                paragraphLines.push(line);
+            });
+
+            flushParagraph();
+            closeList();
+            return html;
+        }
+
+        function inlineMarkup(text) {
+            let value = escapeHtml(text);
+            value = value.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, "<a href=\"$2\" target=\"_blank\" rel=\"noopener noreferrer\">$1</a>");
+            value = value.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+            value = value.replace(/`([^`]+)`/g, "<code>$1</code>");
+            return value;
+        }
+
+        function escapeHtml(value) {
+            return value
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/\"/g, "&quot;")
+                .replace(/'/g, "&#39;");
+        }
+
+        function styleResourceBlocks() {
+            document.querySelectorAll(".markdown-content").forEach((container) => {
+                const headings = Array.from(container.querySelectorAll("h2"));
+                headings.forEach((heading) => {
+                    if (heading.textContent.trim().toLowerCase() !== "resources") {
+                        return;
+                    }
+
+                    const wrapper = document.createElement("section");
+                    wrapper.className = "resources";
+                    heading.parentNode.insertBefore(wrapper, heading);
+
+                    let cursor = heading;
+                    while (cursor) {
+                        const next = cursor.nextElementSibling;
+                        wrapper.appendChild(cursor);
+                        if (!next || next.tagName === "H2") {
+                            break;
+                        }
+                        cursor = next;
+                    }
+                });
+            });
+        }
+
+        function initSmoothNav() {
+            navElement.addEventListener("click", (event) => {
+                const target = event.target.closest("a[data-target]");
+                if (!target) {
+                    return;
+                }
+
+                event.preventDefault();
+                const sectionId = target.dataset.target;
+                const card = document.getElementById(sectionId);
+
+                if (!card) {
+                    return;
+                }
+
+                card.scrollIntoView({ behavior: "smooth", block: "start" });
+                history.replaceState(null, "", `#${sectionId}`);
+            });
+        }
+
+        function initVisibilityObserver() {
+            const cards = document.querySelectorAll(".topic-card");
+
+            if (!("IntersectionObserver" in window)) {
+                cards.forEach((card) => card.classList.add("is-visible"));
+                return;
+            }
+
+            const observer = new IntersectionObserver((entries, track) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("is-visible");
+                        track.unobserve(entry.target);
+                    }
+                });
+            }, { rootMargin: "0px 0px -10% 0px", threshold: 0.08 });
+
+            cards.forEach((card) => observer.observe(card));
+        }
+
+        function initActiveNavObserver() {
+            if (!("IntersectionObserver" in window)) {
+                return;
+            }
+
+            const links = Array.from(navElement.querySelectorAll("a[data-target]"));
+            const sections = links
+                .map((link) => document.getElementById(link.dataset.target))
+                .filter(Boolean);
+
+            const updateActiveLink = (id) => {
+                links.forEach((link) => {
+                    const shouldActivate = link.dataset.target === id;
+                    link.classList.toggle("is-active", shouldActivate);
+                    if (shouldActivate) {
+                        link.setAttribute("aria-current", "true");
+                    } else {
+                        link.removeAttribute("aria-current");
+                    }
+                });
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                const visibleEntries = entries
+                    .filter((entry) => entry.isIntersecting)
+                    .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+
+                if (!visibleEntries.length) {
+                    return;
+                }
+
+                updateActiveLink(visibleEntries[0].target.id);
+            }, {
+                rootMargin: "-42% 0px -46% 0px",
+                threshold: 0
+            });
+
+            sections.forEach((section) => observer.observe(section));
+        }
+
+        function updateStickyOffset() {
+            const commandBar = document.querySelector(".command-bar");
+            const value = commandBar ? commandBar.getBoundingClientRect().height + 20 : 88;
+            document.documentElement.style.setProperty("--sticky-offset", `${Math.round(value)}px`);
+        }
+
+        function jumpToInitialHash() {
+            const { hash } = window.location;
+            if (!hash) {
+                return;
+            }
+
+            const target = document.querySelector(hash);
+            if (!target) {
+                return;
+            }
+
+            requestAnimationFrame(() => {
+                target.scrollIntoView({ behavior: "smooth", block: "start" });
+            });
+        }
+    </script>
+</body>
+</html>
