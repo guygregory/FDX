@@ -368,14 +368,16 @@
                 });
             }
 
-            hydrateFrontierCards();
+            const cardLoadPromise = hydrateFrontierCards();
             initSectionObserver();
             updateStickyMetrics();
             window.addEventListener('resize', updateStickyMetrics);
             window.addEventListener('load', () => {
                 updateStickyMetrics();
                 // Handle hash navigation after page fully loads
-                handleInitialHash();
+                Promise.resolve(cardLoadPromise).finally(() => {
+                    handleInitialHash();
+                });
             });
         });
 
@@ -397,15 +399,15 @@
         }
 
         function hydrateFrontierCards() {
-            document.querySelectorAll('.frontier-card[data-source]').forEach(card => {
+            const loadTasks = Array.from(document.querySelectorAll('.frontier-card[data-source]')).map(card => {
                 const source = card.dataset.source;
                 const container = card.querySelector('.markdown-content');
 
                 if (!source || !container) {
-                    return;
+                    return Promise.resolve();
                 }
 
-                fetch(source)
+                return fetch(source)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error(`Failed to load ${source}`);
@@ -423,6 +425,8 @@
                         card.removeAttribute('aria-busy');
                     });
             });
+
+            return Promise.allSettled(loadTasks);
         }
 
         function enhanceResourceSections(container) {
@@ -448,41 +452,65 @@
         }
 
         function initSectionObserver() {
-            const navLinks = document.querySelectorAll('nav a');
-            const sections = Array.from(navLinks).map(link => document.querySelector(link.getAttribute('href')));
+            const navLinks = Array.from(document.querySelectorAll('nav a'));
+            const sections = navLinks.map(link => document.querySelector(link.getAttribute('href')));
             let activeFromClick = false;
+
+            const setActiveLink = (activeIndex) => {
+                navLinks.forEach((link, index) => {
+                    link.classList.toggle('active', index === activeIndex);
+                });
+            };
+
+            const updateActiveLink = () => {
+                const header = document.querySelector('header');
+                const nav = document.querySelector('nav');
+                const offset = (header ? header.getBoundingClientRect().height : 0)
+                    + (nav ? nav.getBoundingClientRect().height : 0)
+                    + 24;
+                let activeIndex = -1;
+
+                sections.forEach((section, index) => {
+                    if (!section) {
+                        return;
+                    }
+                    const rect = section.getBoundingClientRect();
+                    if (rect.top <= offset && rect.bottom > offset) {
+                        activeIndex = index;
+                    }
+                });
+
+                if (activeIndex === -1) {
+                    activeIndex = Math.max(sections.length - 1, 0);
+                }
+
+                setActiveLink(activeIndex);
+            };
 
             // Handle click events on nav links
             navLinks.forEach((link, index) => {
-                link.addEventListener('click', (e) => {
+                link.addEventListener('click', () => {
                     // Mark that we just clicked a link
                     activeFromClick = true;
-                    
-                    // Remove active from all links
-                    navLinks.forEach(l => l.classList.remove('active'));
-                    
+
                     // Add active to clicked link
-                    link.classList.add('active');
-                    
+                    setActiveLink(index);
+
                     // Reset the click flag after scrolling completes
                     setTimeout(() => {
                         activeFromClick = false;
+                        updateActiveLink();
                     }, 1000);
                 });
             });
 
-            const observer = new IntersectionObserver(entries => {
+            const observer = new IntersectionObserver(() => {
                 // Don't update based on scroll if we just clicked a link
                 if (activeFromClick) {
                     return;
                 }
-                
-                entries.forEach(entry => {
-                    const index = sections.indexOf(entry.target);
-                    if (index !== -1) {
-                        navLinks[index].classList.toggle('active', entry.isIntersecting);
-                    }
-                });
+
+                updateActiveLink();
             }, {
                 rootMargin: '-45% 0px -45% 0px'
             });
@@ -492,6 +520,8 @@
                     observer.observe(section);
                 }
             });
+
+            updateActiveLink();
         }
 
         function updateStickyMetrics() {
