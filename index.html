@@ -463,25 +463,38 @@
             };
 
             const updateActiveLink = () => {
+                if (sections.length === 0) {
+                    setActiveLink(-1);
+                    return;
+                }
+
                 const header = document.querySelector('header');
                 const nav = document.querySelector('nav');
                 const offset = (header ? header.getBoundingClientRect().height : 0)
                     + (nav ? nav.getBoundingClientRect().height : 0)
                     + 24;
                 let activeIndex = -1;
+                let candidateIndex = -1;
 
                 sections.forEach((section, index) => {
                     if (!section) {
                         return;
                     }
                     const rect = section.getBoundingClientRect();
+                    if (rect.top <= offset) {
+                        candidateIndex = index;
+                    }
                     if (rect.top <= offset && rect.bottom > offset) {
                         activeIndex = index;
                     }
                 });
 
                 if (activeIndex === -1) {
-                    activeIndex = sections.length > 0 ? sections.length - 1 : -1;
+                    if (candidateIndex !== -1) {
+                        activeIndex = candidateIndex;
+                    } else {
+                        activeIndex = 0;
+                    }
                 }
 
                 setActiveLink(activeIndex);
@@ -504,20 +517,17 @@
                 });
             });
 
-            const observer = new IntersectionObserver(() => {
+            const handleScroll = () => {
                 // Don't update based on scroll if we just clicked a link
                 if (activeFromClick) {
                     return;
                 }
 
                 updateActiveLink();
-            });
+            };
 
-            sections.forEach(section => {
-                if (section) {
-                    observer.observe(section);
-                }
-            });
+            window.addEventListener('scroll', handleScroll, { passive: true });
+            window.addEventListener('resize', handleScroll);
 
             updateActiveLink();
         }
