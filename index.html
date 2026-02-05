@@ -376,7 +376,7 @@
                 updateStickyMetrics();
                 // Handle hash navigation after page fully loads
                 handleInitialHash();
-                // Initialize observer after hash handling is complete
+                // Initialize observer after hash handling is complete (delay allows scroll animation to finish)
                 setTimeout(() => {
                     initSectionObserver();
                 }, 200);
@@ -520,6 +520,7 @@
 
             // After observer is set up, ensure the correct link is active based on hash
             // This prevents the observer from immediately overriding our hash-based selection
+            // Small delay allows observer to complete initialization
             setTimeout(() => {
                 const hash = window.location.hash;
                 if (hash) {
