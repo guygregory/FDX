@@ -75,21 +75,23 @@
             display: flex;
             flex-wrap: wrap;
             list-style: none;
-            margin: 0;
+            margin: 0 auto;
             padding: 12px clamp(16px, 5vw, 48px);
-            gap: clamp(12px, 2vw, 28px);
+            gap: clamp(8px, 1.5vw, 20px);
             justify-content: center;
             align-items: center;
+            max-width: 900px;
         }
 
         nav a {
             color: var(--muted);
             text-decoration: none;
             font-weight: 600;
-            padding: 8px 14px;
+            padding: 6px 12px;
             border-radius: 999px;
             transition: background 0.2s ease, color 0.2s ease;
             white-space: nowrap;
+            font-size: clamp(0.85rem, 1.1vw, 1rem);
         }
 
         nav a:hover,
@@ -294,6 +296,7 @@
             <li><a href="#frontier-distributor">Frontier Distributor Designation</a></li>
             <li><a href="#frontier-ai">Frontier AI</a></li>
             <li><a href="#frontier-model-forum">Frontier Model Forum</a></li>
+            <li><a href="#openai-frontier">OpenAI Frontier</a></li>
         </ul>
     </nav>
 
@@ -326,6 +329,11 @@
         <article id="frontier-model-forum" class="frontier-card" data-source="frontiermodelforum.md" aria-busy="true">
             <div class="markdown-content" aria-live="polite">
                 <p class="loading-copy">Loading Frontier Model Forum&hellip;</p>
+            </div>
+        </article>
+        <article id="openai-frontier" class="frontier-card" data-source="openaifrontier.md" aria-busy="true">
+            <div class="markdown-content" aria-live="polite">
+                <p class="loading-copy">Loading OpenAI Frontier&hellip;</p>
             </div>
         </article>
     </main>
