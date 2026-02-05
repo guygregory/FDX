@@ -441,14 +441,12 @@
             const navLinks = document.querySelectorAll('nav a');
             const sections = Array.from(navLinks).map(link => document.querySelector(link.getAttribute('href')));
             let activeFromClick = false;
-            let clickedLink = null;
 
             // Handle click events on nav links
             navLinks.forEach((link, index) => {
                 link.addEventListener('click', (e) => {
                     // Mark that we just clicked a link
                     activeFromClick = true;
-                    clickedLink = link;
                     
                     // Remove active from all links
                     navLinks.forEach(l => l.classList.remove('active'));
@@ -459,7 +457,6 @@
                     // Reset the click flag after scrolling completes
                     setTimeout(() => {
                         activeFromClick = false;
-                        clickedLink = null;
                     }, 1000);
                 });
             });
