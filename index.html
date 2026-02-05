@@ -452,6 +452,11 @@
         }
 
         function initSectionObserver() {
+            if (initSectionObserver.initialized) {
+                return;
+            }
+            initSectionObserver.initialized = true;
+
             const navLinks = Array.from(document.querySelectorAll('nav a'));
             const sections = navLinks.map(link => document.querySelector(link.getAttribute('href')));
             let activeFromClick = false;
@@ -473,6 +478,7 @@
                 const offset = (header ? header.getBoundingClientRect().height : 0)
                     + (nav ? nav.getBoundingClientRect().height : 0)
                     + 24;
+                const isAtTop = window.scrollY <= offset;
                 let activeIndex = -1;
                 let candidateIndex = -1;
 
@@ -492,7 +498,7 @@
                 if (activeIndex === -1) {
                     if (candidateIndex !== -1) {
                         activeIndex = candidateIndex;
-                    } else {
+                    } else if (isAtTop) {
                         activeIndex = 0;
                     }
                 }
