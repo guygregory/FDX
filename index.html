@@ -381,6 +381,9 @@
             });
         });
 
+        const SCROLL_OFFSET_PADDING = 24;
+        let sectionObserverInitialized = false;
+
         function handleInitialHash() {
             const hash = window.location.hash;
             if (hash) {
@@ -390,7 +393,7 @@
                     setTimeout(() => {
                         const headerHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 0;
                         const navHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-height')) || 0;
-                        const offset = headerHeight + navHeight + 24;
+                        const offset = headerHeight + navHeight + SCROLL_OFFSET_PADDING;
                         const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
                         window.scrollTo({ top: targetPosition, behavior: 'smooth' });
                     }, 100);
@@ -452,14 +455,15 @@
         }
 
         function initSectionObserver() {
-            if (initSectionObserver.initialized) {
+            if (sectionObserverInitialized) {
                 return;
             }
-            initSectionObserver.initialized = true;
+            sectionObserverInitialized = true;
 
             const navLinks = Array.from(document.querySelectorAll('nav a'));
             const sections = navLinks.map(link => document.querySelector(link.getAttribute('href')));
             let activeFromClick = false;
+            let scrollTicking = false;
 
             const setActiveLink = (activeIndex) => {
                 navLinks.forEach((link, index) => {
@@ -477,7 +481,7 @@
                 const nav = document.querySelector('nav');
                 const offset = (header ? header.getBoundingClientRect().height : 0)
                     + (nav ? nav.getBoundingClientRect().height : 0)
-                    + 24;
+                    + SCROLL_OFFSET_PADDING;
                 const isAtTop = window.scrollY <= offset;
                 let activeIndex = -1;
                 let candidateIndex = -1;
@@ -529,7 +533,13 @@
                     return;
                 }
 
-                updateActiveLink();
+                if (!scrollTicking) {
+                    scrollTicking = true;
+                    window.requestAnimationFrame(() => {
+                        scrollTicking = false;
+                        updateActiveLink();
+                    });
+                }
             };
 
             window.addEventListener('scroll', handleScroll, { passive: true });
