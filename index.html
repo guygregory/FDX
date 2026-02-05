@@ -450,8 +450,33 @@
         function initSectionObserver() {
             const navLinks = document.querySelectorAll('nav a');
             const sections = Array.from(navLinks).map(link => document.querySelector(link.getAttribute('href')));
+            let activeFromClick = false;
+
+            // Handle click events on nav links
+            navLinks.forEach((link, index) => {
+                link.addEventListener('click', (e) => {
+                    // Mark that we just clicked a link
+                    activeFromClick = true;
+                    
+                    // Remove active from all links
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    
+                    // Add active to clicked link
+                    link.classList.add('active');
+                    
+                    // Reset the click flag after scrolling completes
+                    setTimeout(() => {
+                        activeFromClick = false;
+                    }, 1000);
+                });
+            });
 
             const observer = new IntersectionObserver(entries => {
+                // Don't update based on scroll if we just clicked a link
+                if (activeFromClick) {
+                    return;
+                }
+                
                 entries.forEach(entry => {
                     const index = sections.indexOf(entry.target);
                     if (index !== -1) {
