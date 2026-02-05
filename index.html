@@ -481,7 +481,7 @@
                 });
 
                 if (activeIndex === -1) {
-                    activeIndex = Math.max(sections.length - 1, 0);
+                    activeIndex = sections.length > 0 ? sections.length - 1 : -1;
                 }
 
                 setActiveLink(activeIndex);
@@ -511,8 +511,6 @@
                 }
 
                 updateActiveLink();
-            }, {
-                rootMargin: '-45% 0px -45% 0px'
             });
 
             sections.forEach(section => {
