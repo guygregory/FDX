@@ -94,7 +94,13 @@
             font-size: clamp(0.85rem, 1.1vw, 1rem);
         }
 
-        nav a:hover,
+        @media (hover: hover) {
+            nav a:hover {
+                color: var(--fg);
+                background: var(--accent-soft);
+            }
+        }
+
         nav a:focus {
             color: var(--fg);
             background: var(--accent-soft);
@@ -194,7 +200,12 @@
             font-weight: 600;
         }
 
-        .resources a:hover,
+        @media (hover: hover) {
+            .resources a:hover {
+                text-decoration: underline;
+            }
+        }
+
         .resources a:focus {
             text-decoration: underline;
         }
@@ -230,7 +241,12 @@
             font-weight: 600;
         }
 
-        .markdown-content a:hover,
+        @media (hover: hover) {
+            .markdown-content a:hover {
+                text-decoration: underline;
+            }
+        }
+
         .markdown-content a:focus {
             text-decoration: underline;
         }
