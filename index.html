@@ -475,6 +475,7 @@
         @media (max-width: 640px) {
             .card-source { display: none; }
             .card-header { gap: 10px; }
+            .theme-toggle { display: none; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -746,17 +747,28 @@
             themeBtn.setAttribute('aria-label', `Theme: ${mode}`);
         }
 
+        const MOBILE_BP = 640;
+
+        function isMobile() {
+            return window.innerWidth <= MOBILE_BP;
+        }
+
         function initTheme() {
-            applyTheme(getPreferred());
+            applyTheme(isMobile() ? 'system' : getPreferred());
             themeBtn.addEventListener('click', () => {
+                if (isMobile()) return;
                 const cur = getPreferred();
                 const next = MODES[(MODES.indexOf(cur) + 1) % MODES.length];
                 localStorage.setItem('fdx-theme', next);
                 applyTheme(next);
             });
             window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
-                if (getPreferred() === 'system') applyTheme('system');
+                if (isMobile() || getPreferred() === 'system') applyTheme('system');
             });
+            window.addEventListener('resize', () => {
+                if (isMobile()) applyTheme('system');
+                else applyTheme(getPreferred());
+            }, { passive: true });
         }
 
         /* ── Boot ────────────────────────────────────── */
