@@ -1,0 +1,818 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FDX — Frontier Disambiguation Experience</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════════
+           BRUTALIST TOKENS
+           ═══════════════════════════════════════════════ */
+        :root {
+            --bg: #E8E4E0;
+            --surface: #FFFFFF;
+            --border-color: #000000;
+            --text: #000000;
+            --text-dim: #1a1a1a;
+            --text-muted: #555555;
+            --accent: #FFE600;
+            --accent-hover: #FFD000;
+            --accent-text: #000000;
+            --topbar-bg: #E8E4E0;
+            --card-heading: #000000;
+            --border-w: 3px;
+            --max-w: 1040px;
+            --nav-h: 0px;
+            --font-head: 'Space Mono', monospace;
+            --font-body: 'DM Sans', system-ui, sans-serif;
+        }
+
+        html.dark {
+            --bg: #0A0A0A;
+            --surface: #111111;
+            --border-color: #FFFFFF;
+            --text: #FFFFFF;
+            --text-dim: #E0E0E0;
+            --text-muted: #999999;
+            --accent: #FFE600;
+            --accent-hover: #FFD000;
+            --accent-text: #000000;
+            --topbar-bg: #0A0A0A;
+            --card-heading: #FFFFFF;
+        }
+
+        /* ═══════════════════════════════════════════════
+           RESET
+           ═══════════════════════════════════════════════ */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: auto; -webkit-text-size-adjust: 100%; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100dvh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::selection {
+            background: var(--accent);
+            color: #000000;
+        }
+
+        /* ═══════════════════════════════════════════════
+           STRUCTURAL GRID OVERLAY
+           ═══════════════════════════════════════════════ */
+        .brutalist-grid {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background-image:
+                linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+            background-size: 120px 120px;
+        }
+
+        html.dark .brutalist-grid {
+            background-image:
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+        }
+
+        /* ═══════════════════════════════════════════════
+           SHELL
+           ═══════════════════════════════════════════════ */
+        .shell {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 0 clamp(16px, 4vw, 40px);
+        }
+
+        /* ═══════════════════════════════════════════════
+           TOPBAR / STICKY HEADER
+           ═══════════════════════════════════════════════ */
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--topbar-bg);
+            border-bottom: var(--border-w) solid var(--border-color);
+        }
+
+        /* ─── HERO TITLE ─── */
+        .topbar-title {
+            padding: clamp(14px, 2.5vw, 24px) 0 clamp(10px, 1.5vw, 16px);
+            border-bottom: var(--border-w) solid var(--border-color);
+        }
+
+        .topbar-title h1 {
+            font-family: var(--font-head);
+            font-size: clamp(1.6rem, 5vw, 3.6rem);
+            font-weight: 700;
+            line-height: 0.95;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+            color: var(--text);
+        }
+
+        .title-link {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .title-link:hover .title-accent,
+        .title-link:focus-visible .title-accent {
+            background: var(--accent);
+            color: var(--accent-text);
+        }
+
+        .title-accent {
+            display: inline;
+            padding: 0 0.1em;
+            transition: none;
+        }
+
+        .title-sub {
+            display: block;
+            font-family: var(--font-body);
+            font-size: clamp(0.7rem, 1.2vw, 0.85rem);
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        /* ─── NAV ─── */
+        .topbar-nav {
+            overflow: hidden;
+        }
+
+        .topbar-inner {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 0 clamp(16px, 4vw, 40px);
+            display: flex;
+            align-items: stretch;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .topbar-inner::-webkit-scrollbar { display: none; }
+
+        .topbar-inner a {
+            flex: 0 0 auto;
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 16px;
+            font-family: var(--font-head);
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            border-right: var(--border-w) solid var(--border-color);
+            white-space: nowrap;
+            transition: none;
+            position: relative;
+        }
+
+        .topbar-inner a:first-child {
+            border-left: var(--border-w) solid var(--border-color);
+        }
+
+        .topbar-inner a:hover {
+            background: var(--accent);
+            color: var(--accent-text);
+        }
+
+        .topbar-inner a:focus-visible {
+            background: var(--accent);
+            color: var(--accent-text);
+            outline: none;
+        }
+
+        .topbar-inner a.active {
+            background: var(--text);
+            color: var(--bg);
+        }
+
+        .topbar-inner a .nav-num {
+            font-size: 0.6rem;
+            opacity: 0.5;
+            margin-right: 6px;
+        }
+
+        /* ═══════════════════════════════════════════════
+           THEME TOGGLE — BRUTALIST
+           ═══════════════════════════════════════════════ */
+        .theme-toggle {
+            position: fixed;
+            right: clamp(16px, 3vw, 32px);
+            bottom: 24px;
+            z-index: 200;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border: var(--border-w) solid var(--border-color);
+            border-radius: 0;
+            background: var(--bg);
+            color: var(--text);
+            cursor: pointer;
+            transition: none;
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent);
+            color: var(--accent-text);
+        }
+
+        .theme-toggle:focus-visible {
+            background: var(--accent);
+            color: var(--accent-text);
+            outline: none;
+        }
+
+        .theme-toggle svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: square;
+            stroke-linejoin: miter;
+        }
+
+        /* ═══════════════════════════════════════════════
+           CARDS CONTAINER
+           ═══════════════════════════════════════════════ */
+        .cards {
+            padding: 32px 0 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        /* ═══════════════════════════════════════════════
+           CARD — BRUTALIST BLOCK
+           ═══════════════════════════════════════════════ */
+        .card {
+            position: relative;
+            background: var(--surface);
+            border: var(--border-w) solid var(--border-color);
+            border-radius: 0;
+            overflow: hidden;
+            scroll-margin-top: calc(var(--nav-h) + 24px);
+            margin-bottom: -3px; /* collapse double borders */
+        }
+
+        .card:hover {
+            z-index: 2;
+        }
+
+        .card-inner {
+            padding: clamp(20px, 3vw, 40px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: var(--border-w) solid var(--border-color);
+        }
+
+        .card-num {
+            font-family: var(--font-head);
+            font-size: clamp(2.4rem, 5vw, 3.6rem);
+            font-weight: 700;
+            line-height: 1;
+            color: var(--accent);
+            flex-shrink: 0;
+            min-width: 1.8em;
+            -webkit-text-stroke: 1px var(--border-color);
+        }
+
+        html.dark .card-num {
+            -webkit-text-stroke: 1px var(--accent);
+        }
+
+        .card-header h2 {
+            font-family: var(--font-head);
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            color: var(--card-heading);
+            text-transform: uppercase;
+            line-height: 1.1;
+        }
+
+        .card-source {
+            margin-left: auto;
+            flex-shrink: 0;
+            font-family: var(--font-head);
+            font-size: 0.65rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            border: 2px solid var(--border-color);
+            padding: 3px 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* ═══════════════════════════════════════════════
+           MARKDOWN CONTENT — RAW
+           ═══════════════════════════════════════════════ */
+        .md {
+            font-size: 0.92rem;
+            color: var(--text-dim);
+            line-height: 1.65;
+        }
+
+        .md h1 { display: none; }
+
+        .md h2 {
+            font-family: var(--font-head);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: var(--text);
+            margin: 32px 0 14px;
+            padding: 6px 0;
+            border-top: 2px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .md h2:first-of-type {
+            margin-top: 0;
+        }
+
+        .md h3 {
+            font-family: var(--font-head);
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text);
+            margin: 22px 0 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .md p {
+            margin: 0 0 14px;
+        }
+
+        .md ul {
+            margin: 0 0 16px;
+            padding-left: 0;
+            list-style: none;
+        }
+
+        .md li {
+            margin-top: 6px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .md li::before {
+            content: '—';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .md strong {
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .md code {
+            font-family: var(--font-head);
+            font-size: 0.82em;
+            background: var(--accent);
+            color: #000000;
+            padding: 0.15em 0.4em;
+            border: 1px solid var(--border-color);
+        }
+
+        .md a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 2px solid var(--accent);
+            transition: none;
+        }
+
+        .md a:hover {
+            background: var(--accent);
+            color: #000000;
+        }
+
+        .md a:focus-visible {
+            background: var(--accent);
+            color: #000000;
+            outline: none;
+        }
+
+        /* Resources block */
+        .md .resources-block {
+            margin-top: 28px;
+            padding: 20px;
+            background: transparent;
+            border: 2px solid var(--border-color);
+            border-left: 8px solid var(--accent);
+        }
+
+        .md .resources-block h2 {
+            margin-top: 0;
+            border-top: none;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text);
+        }
+
+        /* Loading */
+        .card-loading {
+            font-family: var(--font-head);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            animation: brutalist-blink 0.6s step-end infinite;
+        }
+
+        .card-loading::after { content: '___'; }
+
+        @keyframes brutalist-blink {
+            50% { opacity: 0; }
+        }
+
+        /* ═══════════════════════════════════════════════
+           CARD ENTER ANIMATION — HARD STOP
+           ═══════════════════════════════════════════════ */
+        .card {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.15s steps(3),
+                        transform 0.2s steps(4);
+        }
+
+        .card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ═══════════════════════════════════════════════
+           FOOTER
+           ═══════════════════════════════════════════════ */
+        footer {
+            text-align: center;
+            padding: 0 24px 60px;
+            font-family: var(--font-head);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+        }
+
+        footer .divider {
+            width: 100%;
+            max-width: var(--max-w);
+            height: var(--border-w);
+            background: var(--border-color);
+            margin: 0 auto 20px;
+        }
+
+        /* ═══════════════════════════════════════════════
+           RESPONSIVE
+           ═══════════════════════════════════════════════ */
+        @media (max-width: 640px) {
+            .card-source { display: none; }
+            .card-header { gap: 10px; }
+            .card-num { font-size: 1.6rem; min-width: 1.4em; }
+            .theme-toggle { display: none; }
+            .title-abbr { display: none; }
+            .brutalist-grid { display: none; }
+            .topbar-inner a {
+                padding: 8px 10px;
+                font-size: 0.62rem;
+            }
+            .topbar-inner a .nav-num { display: none; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            .card {
+                transition: none;
+                animation: none;
+                opacity: 1;
+                transform: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="brutalist-grid" aria-hidden="true"></div>
+
+    <!-- Theme toggle -->
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle theme">
+        <svg id="themeIcon" viewBox="0 0 24 24"></svg>
+    </button>
+
+    <!-- Sticky Header + Nav -->
+    <header class="topbar" aria-label="Frontier topics">
+        <div class="topbar-title shell">
+            <h1><a href="https://fdx.guygregory.com/" class="title-link"><span class="title-accent">FDX</span> FRONTIER<br>DISAMBIGUATION<br>EXPERIENCE</a></h1>
+            <span class="title-sub">7 concepts &middot; 1 word &middot; 0 clarity</span>
+        </div>
+        <nav class="topbar-nav">
+            <div class="topbar-inner" id="topNav"></div>
+        </nav>
+    </header>
+
+    <!-- Content -->
+    <div class="shell">
+        <div class="cards" id="cardContainer"></div>
+    </div>
+
+    <footer>
+        <div class="divider" aria-hidden="true"></div>
+        Created by Guy Gregory and GitHub Copilot
+    </footer>
+
+    <script>
+    (() => {
+        'use strict';
+
+        const TOPICS = [
+            { id: 'frontier-firm', label: 'Frontier Firm', src: 'frontierfirm.md' },
+            { id: 'frontier-program', label: 'Frontier Program', src: 'frontierprogram.md' },
+            { id: 'frontier-partner', label: 'Frontier Partner', src: 'frontierpartner.md' },
+            { id: 'frontier-distributor', label: 'Frontier Distributor', src: 'frontierdistributor.md' },
+            { id: 'frontier-ai', label: 'Frontier AI', src: 'frontierai.md' },
+            { id: 'frontier-model-forum', label: 'Frontier Model Forum', src: 'frontiermodelforum.md' },
+            { id: 'openai-frontier', label: 'OpenAI Frontier', src: 'openaifrontier.md' }
+        ];
+
+        const nav = document.getElementById('topNav');
+        const container = document.getElementById('cardContainer');
+
+        /* ── Build DOM ───────────────────────────────── */
+        function build() {
+            const navFrag = document.createDocumentFragment();
+            const cardFrag = document.createDocumentFragment();
+
+            TOPICS.forEach((t, i) => {
+                // nav link
+                const a = document.createElement('a');
+                a.href = `#${t.id}`;
+                a.dataset.target = t.id;
+                a.innerHTML = `<span class="nav-num">${String(i + 1).padStart(2, '0')}</span>${esc(t.label)}`;
+                navFrag.appendChild(a);
+
+                // card
+                const article = document.createElement('article');
+                article.className = 'card';
+                article.id = t.id;
+                article.setAttribute('aria-busy', 'true');
+                article.innerHTML = `
+                    <div class="card-inner">
+                        <header class="card-header">
+                            <span class="card-num" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
+                            <h2>${esc(t.label)}</h2>
+                            <span class="card-source">${esc(t.src)}</span>
+                        </header>
+                        <div class="md" aria-live="polite">
+                            <p class="card-loading">LOADING</p>
+                        </div>
+                    </div>`;
+                cardFrag.appendChild(article);
+            });
+
+            nav.appendChild(navFrag);
+            container.appendChild(cardFrag);
+        }
+
+        /* ── Fetch & Render Markdown ─────────────────── */
+        async function hydrate() {
+            const cards = Array.from(document.querySelectorAll('.card[aria-busy]'));
+            await Promise.all(cards.map(async card => {
+                const topic = TOPICS.find(t => t.id === card.id);
+                if (!topic) return;
+                const mdEl = card.querySelector('.md');
+                try {
+                    const res = await fetch(topic.src, { cache: 'no-store' });
+                    if (!res.ok) throw new Error(res.status);
+                    mdEl.innerHTML = md(await res.text());
+                    wrapResources(mdEl);
+                } catch {
+                    mdEl.innerHTML = '<p>Unable to load content.</p>';
+                } finally {
+                    card.removeAttribute('aria-busy');
+                }
+            }));
+        }
+
+        /* ── Markdown parser ─────────────────────────── */
+        function md(raw) {
+            const lines = raw.replace(/\r\n/g, '\n').split('\n');
+            let out = '';
+            let buf = [];
+            let ul = false;
+
+            const flush = () => { if (buf.length) { out += `<p>${inline(buf.join(' '))}</p>`; buf = []; } };
+            const closeUl = () => { if (ul) { out += '</ul>'; ul = false; } };
+
+            for (const rawLine of lines) {
+                const line = rawLine.trim();
+                if (!line) { flush(); closeUl(); continue; }
+
+                const hm = line.match(/^(#{1,3})\s+(.*)$/);
+                if (hm) { flush(); closeUl(); const l = hm[1].length; out += `<h${l}>${inline(hm[2])}</h${l}>`; continue; }
+
+                const lm = rawLine.match(/^\s*[-*]\s+(.*)$/);
+                if (lm) { flush(); if (!ul) { out += '<ul>'; ul = true; } out += `<li>${inline(lm[1])}</li>`; continue; }
+
+                buf.push(line);
+            }
+            flush();
+            closeUl();
+            return out;
+        }
+
+        function inline(t) {
+            let s = esc(t);
+            s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+            s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+            return s;
+        }
+
+        function esc(v) {
+            return v.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+        }
+
+        /* ── Wrap Resources sections ─────────────────── */
+        function wrapResources(el) {
+            el.querySelectorAll('h2').forEach(h => {
+                if (h.textContent.trim().toLowerCase() !== 'resources') return;
+                const wrap = document.createElement('section');
+                wrap.className = 'resources-block';
+                h.parentNode.insertBefore(wrap, h);
+                let cur = h;
+                while (cur) {
+                    const next = cur.nextElementSibling;
+                    wrap.appendChild(cur);
+                    if (!next || next.tagName === 'H2') break;
+                    cur = next;
+                }
+            });
+        }
+
+        /* ── Sticky nav offset ───────────────────────── */
+        function measureNav() {
+            const bar = document.querySelector('.topbar');
+            if (bar) document.documentElement.style.setProperty('--nav-h', bar.offsetHeight + 'px');
+        }
+
+        /* ── Scroll-reveal cards ─────────────────────── */
+        function initReveal() {
+            if (!('IntersectionObserver' in window)) {
+                document.querySelectorAll('.card').forEach(c => c.classList.add('visible'));
+                return;
+            }
+            const io = new IntersectionObserver((entries, obs) => {
+                entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+            }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+            document.querySelectorAll('.card').forEach(c => io.observe(c));
+        }
+
+        /* ── Active nav tracking ─────────────────────── */
+        function initActiveNav() {
+            if (!('IntersectionObserver' in window)) return;
+            const links = Array.from(nav.querySelectorAll('a[data-target]'));
+            const sections = links.map(l => document.getElementById(l.dataset.target)).filter(Boolean);
+            let clickLock = false;
+
+            const setActive = id => {
+                links.forEach(l => {
+                    const on = l.dataset.target === id;
+                    l.classList.toggle('active', on);
+                    on ? l.setAttribute('aria-current', 'true') : l.removeAttribute('aria-current');
+                    if (on) l.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+                });
+            };
+
+            const io = new IntersectionObserver(entries => {
+                if (clickLock) return;
+                const vis = entries.filter(e => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+                if (vis.length) setActive(vis[0].target.id);
+            }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
+
+            sections.forEach(s => io.observe(s));
+
+            // Click handler
+            nav.addEventListener('click', e => {
+                const a = e.target.closest('a[data-target]');
+                if (!a) return;
+                e.preventDefault();
+                const target = document.getElementById(a.dataset.target);
+                if (!target) return;
+                clickLock = true;
+                setActive(a.dataset.target);
+                scrollToCard(target);
+                history.replaceState(null, '', `#${a.dataset.target}`);
+                setTimeout(() => { clickLock = false; }, 1000);
+            });
+        }
+
+        /* ── Scroll helper ───────────────────────────── */
+        function scrollToCard(el) {
+            const bar = document.querySelector('.topbar');
+            const gap = 20;
+            const top = el.getBoundingClientRect().top + window.scrollY - (bar ? bar.offsetHeight : 0) - gap;
+            window.scrollTo({ top, behavior: 'smooth' });
+        }
+
+        /* ── Initial hash ────────────────────────────── */
+        function jumpHash() {
+            const { hash } = window.location;
+            if (!hash) return;
+            const el = document.querySelector(hash);
+            if (el) requestAnimationFrame(() => scrollToCard(el));
+        }
+
+        /* ── Theme toggle ─────────────────────────────── */
+        const ICONS = {
+            dark: '<path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/>',
+            light: '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>',
+            system: '<rect x="2" y="3" width="20" height="14" rx="0"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>'
+        };
+        const MODES = ['system', 'dark', 'light'];
+        const themeBtn = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+
+        function getPreferred() {
+            return localStorage.getItem('fdx-theme') || 'system';
+        }
+
+        function resolveTheme(mode) {
+            if (mode === 'system') return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            return mode;
+        }
+
+        function applyTheme(mode) {
+            const resolved = resolveTheme(mode);
+            document.documentElement.classList.toggle('dark', resolved === 'dark');
+            themeIcon.innerHTML = ICONS[mode];
+            themeBtn.setAttribute('aria-label', `Theme: ${mode}`);
+        }
+
+        const MOBILE_BP = 640;
+
+        function isMobile() {
+            return window.innerWidth <= MOBILE_BP;
+        }
+
+        function initTheme() {
+            applyTheme(isMobile() ? 'system' : getPreferred());
+            themeBtn.addEventListener('click', () => {
+                if (isMobile()) return;
+                const cur = getPreferred();
+                const next = MODES[(MODES.indexOf(cur) + 1) % MODES.length];
+                localStorage.setItem('fdx-theme', next);
+                applyTheme(next);
+            });
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+                if (isMobile() || getPreferred() === 'system') applyTheme('system');
+            });
+            window.addEventListener('resize', () => {
+                if (isMobile()) applyTheme('system');
+                else applyTheme(getPreferred());
+            }, { passive: true });
+        }
+
+        /* ── Boot ────────────────────────────────────── */
+        document.addEventListener('DOMContentLoaded', async () => {
+            initTheme();
+            build();
+            measureNav();
+            window.addEventListener('resize', measureNav, { passive: true });
+            await hydrate();
+            initReveal();
+            initActiveNav();
+            jumpHash();
+        });
+    })();
+    </script>
+</body>
+</html>
