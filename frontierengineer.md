@@ -1,8 +1,8 @@
-# Frontier Engineer
+# Frontier Transformation Engineer
 
 ## What is it?
 
-The **Frontier Engineer Badge** is a new learning path introduced by Microsoft, delivered through the Titan Academy. It prepares Solution Engineers and Solution Architects within partner organisations to design, build, and operate production-ready agentic AI solutions across the Frontier Transformation stack.
+The **Frontier Transformation Engineer Badge** is a new learning path introduced by Microsoft, delivered through the Titan Academy. It prepares Solution Engineers and Solution Architects within partner organisations to design, build, and operate production-ready agentic AI solutions across the Frontier Transformation stack.
 
 The badge covers the following technologies:
 
@@ -15,7 +15,7 @@ The badge covers the following technologies:
 
 ## The Three-Part Model
 
-The Frontier Engineer journey is hands-on by design and follows a structured three-part model:
+The Frontier Transformation Engineer journey is hands-on by design and follows a structured three-part model:
 
 ### 1. Earn Required Certifications
 Establish a shared technical baseline through targeted certifications that validate foundational knowledge across the Frontier Transformation stack.
@@ -37,5 +37,5 @@ Delivery-ready engineers who can take customers from early-stage AI prototypes t
 
 ## Resources
 
-- [Frontier Engineer Badge Announcement (Nicole Dezen)](https://blogs.microsoft.com/blog/2026/04/21/accelerating-frontier-transformation-with-microsoft-partners/)
+- [Frontier Transformation Engineer Badge Announcement (Nicole Dezen)](https://blogs.microsoft.com/blog/2026/04/21/accelerating-frontier-transformation-with-microsoft-partners/)
 - [Microsoft Titan Skilling Academy](https://skillupwithlevelup.com/titan)
