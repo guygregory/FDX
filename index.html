@@ -210,12 +210,14 @@
         }
 
         .topbar-inner {
-            max-width: var(--max-w);
+            width: 100%;
+            max-width: 1160px;
             margin: 0 auto;
-            padding: 0 clamp(16px, 4vw, 32px);
+            padding: 0 clamp(12px, 2vw, 20px);
             display: flex;
             align-items: center;
-            gap: 6px;
+            justify-content: center;
+            gap: 4px;
             overflow-x: auto;
             scrollbar-width: none;
             -ms-overflow-style: none;
@@ -228,8 +230,8 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 6px 14px;
-            font-size: 0.8rem;
+            padding: 6px 10px;
+            font-size: 0.78rem;
             font-weight: 500;
             color: var(--text-muted);
             text-decoration: none;
@@ -537,11 +539,11 @@
             { id: 'frontier-firm', label: 'Frontier Firm', src: 'frontierfirm.md' },
             { id: 'frontier-program', label: 'Frontier Program', src: 'frontierprogram.md' },
             { id: 'frontier-partner', label: 'Frontier Partner', src: 'frontierpartner.md' },
+            { id: 'frontier-engineer', label: 'Frontier Engineer', src: 'frontierengineer.md' },
             { id: 'frontier-distributor', label: 'Frontier Distributor', src: 'frontierdistributor.md' },
             { id: 'frontier-ai', label: 'Frontier AI', src: 'frontierai.md' },
             { id: 'frontier-model-forum', label: 'Frontier Model Forum', src: 'frontiermodelforum.md' },
-            { id: 'openai-frontier', label: 'OpenAI Frontier', src: 'openaifrontier.md' },
-            { id: 'frontier-engineer', label: 'Frontier Engineer', src: 'frontierengineer.md' }
+            { id: 'openai-frontier', label: 'OpenAI Frontier', src: 'openaifrontier.md' }
         ];
 
         const nav = document.getElementById('topNav');
@@ -608,25 +610,41 @@
             const lines = raw.replace(/\r\n/g, '\n').split('\n');
             let out = '';
             let buf = [];
-            let ul = false;
+            let listDepth = -1;
+            const liOpen = [];
 
             const flush = () => { if (buf.length) { out += `<p>${inline(buf.join(' '))}</p>`; buf = []; } };
-            const closeUl = () => { if (ul) { out += '</ul>'; ul = false; } };
+            const closeLi = depth => { if (liOpen[depth]) { out += '</li>'; liOpen[depth] = false; } };
+            const openUl = () => { out += '<ul>'; listDepth += 1; liOpen[listDepth] = false; };
+            const closeUl = () => { closeLi(listDepth); out += '</ul>'; liOpen.pop(); listDepth -= 1; };
+            const closeAllLists = () => { while (listDepth >= 0) closeUl(); };
 
             for (const rawLine of lines) {
                 const line = rawLine.trim();
-                if (!line) { flush(); closeUl(); continue; }
+                if (!line) { flush(); closeAllLists(); continue; }
 
                 const hm = line.match(/^(#{1,3})\s+(.*)$/);
-                if (hm) { flush(); closeUl(); const l = hm[1].length; out += `<h${l}>${inline(hm[2])}</h${l}>`; continue; }
+                if (hm) { flush(); closeAllLists(); const l = hm[1].length; out += `<h${l}>${inline(hm[2])}</h${l}>`; continue; }
 
-                const lm = rawLine.match(/^\s*[-*]\s+(.*)$/);
-                if (lm) { flush(); if (!ul) { out += '<ul>'; ul = true; } out += `<li>${inline(lm[1])}</li>`; continue; }
+                const lm = rawLine.match(/^([ \t]*)[-*]\s+(.*)$/);
+                if (lm) {
+                    flush();
+                    let depth = Math.floor(lm[1].replace(/\t/g, '    ').length / 4);
+                    if (depth > listDepth + 1) depth = listDepth + 1;
+                    while (listDepth < depth) openUl();
+                    while (listDepth > depth) closeUl();
+                    if (listDepth < 0) openUl();
+                    closeLi(depth);
+                    out += `<li>${inline(lm[2])}`;
+                    liOpen[depth] = true;
+                    continue;
+                }
 
+                closeAllLists();
                 buf.push(line);
             }
             flush();
-            closeUl();
+            closeAllLists();
             return out;
         }
 
