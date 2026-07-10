@@ -1,4 +1,4 @@
-# FDX — Frontier Disambiguation Experience
+# Frontier Disambiguation Experience (FDX)
 
 FDX is a small, static reference site for distinguishing between organizations, programs, credentials, frameworks, and industry terms that use the word "Frontier."
 
