@@ -266,13 +266,13 @@
         .topic-tile::after {
             content: '';
             position: absolute;
-            width: 70%;
+            width: 100%;
             aspect-ratio: 1;
-            right: -35%;
-            bottom: -45%;
+            right: -50%;
+            bottom: -60%;
             z-index: -1;
             border-radius: 50%;
-            background: radial-gradient(circle, var(--tile-glow), transparent 70%);
+            background: radial-gradient(circle, var(--tile-glow), transparent 82%);
             transition: transform 260ms;
         }
 
@@ -651,14 +651,6 @@
             { id: 'openai-frontier', src: 'openaifrontier.md' }
         ];
 
-        const TILE_COLORS = [
-            ['#a78bfa', 'rgba(167,139,250,0.2)'],
-            ['#22d3ee', 'rgba(34,211,238,0.18)'],
-            ['#34d399', 'rgba(52,211,153,0.17)'],
-            ['#fbbf24', 'rgba(251,191,36,0.14)'],
-            ['#60a5fa', 'rgba(96,165,250,0.18)']
-        ];
-
         const ICONS = {
             dark: '<path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/>',
             light: '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>',
@@ -702,13 +694,10 @@
             TOPICS.forEach((topic, index) => {
                 const item = document.createElement('li');
                 const button = document.createElement('button');
-                const color = TILE_COLORS[index % TILE_COLORS.length];
                 button.className = 'topic-tile';
                 button.type = 'button';
                 button.dataset.topic = topic.id;
                 button.style.setProperty('--tile-index', index);
-                button.style.setProperty('--tile-accent', color[0]);
-                button.style.setProperty('--tile-glow', color[1]);
                 button.setAttribute('aria-haspopup', 'dialog');
                 button.innerHTML = `
                     <span class="tile-label">${esc(topic.label)}</span>
@@ -747,6 +736,13 @@
             document.documentElement.style.setProperty('--tile-gap', `${gap}px`);
             document.documentElement.style.setProperty('--grid-width', `${best.columns * Math.max(42, best.size) + gap * (best.columns - 1)}px`);
             document.documentElement.classList.toggle('compact-tiles', best.size < 76);
+
+            grid.querySelectorAll('.topic-tile').forEach((tile, index) => {
+                const mix = best.columns === 1 ? 0 : (index % best.columns) / (best.columns - 1) * 100;
+                const accent = `color-mix(in srgb, var(--title-from), var(--title-to) ${mix}%)`;
+                tile.style.setProperty('--tile-accent', accent);
+                tile.style.setProperty('--tile-glow', `color-mix(in srgb, ${accent} 8%, transparent)`);
+            });
         }
 
         function scheduleFit() {
