@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="theme-color" content="#09090b">
+    <meta name="theme-color" content="#1b1b1f">
     <title>FDX &mdash; Frontier Disambiguation Experience</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,25 +11,26 @@
     <style>
         :root {
             color-scheme: dark;
-            --bg: #09090b;
+            --bg: #1b1b1f;
             --surface: rgba(255, 255, 255, 0.04);
             --surface-hover: rgba(255, 255, 255, 0.075);
-            --surface-card: rgba(255, 255, 255, 0.045);
-            --border: rgba(255, 255, 255, 0.09);
+            --surface-card: #101012;
+            --border: rgba(255, 255, 255, 0.11);
             --border-hover: rgba(255, 255, 255, 0.2);
             --text: #e4e4e7;
             --text-dim: #a1a1aa;
             --text-muted: #71717a;
+            --footer-text: #a1a1aa;
             --accent: #a78bfa;
             --accent-dim: rgba(167, 139, 250, 0.14);
             --accent-glow: rgba(167, 139, 250, 0.22);
             --green: #34d399;
             --cyan: #22d3ee;
-            --title-from: #cbb8f7;
-            --title-mid: #b4ccf4;
-            --title-to: #9de0f0;
-            --panel: #111114;
-            --panel-soft: rgba(17, 17, 20, 0.96);
+            --title-from: #9d8cbe;
+            --title-mid: #8da2bd;
+            --title-to: #78aeb8;
+            --panel: #18181b;
+            --panel-soft: rgba(24, 24, 27, 0.96);
             --scene-a: rgba(167, 139, 250, 0.13);
             --scene-b: rgba(34, 211, 238, 0.07);
             --grid-line: rgba(255, 255, 255, 0.018);
@@ -51,6 +52,7 @@
             --text: #1c1c1e;
             --text-dim: #48484a;
             --text-muted: #7c7c82;
+            --footer-text: #7c7c82;
             --accent: #7c3aed;
             --accent-dim: rgba(124, 58, 237, 0.1);
             --accent-glow: rgba(124, 58, 237, 0.16);
@@ -287,7 +289,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            color: var(--text-muted);
+            color: var(--text-dim);
             font-family: 'JetBrains Mono', monospace;
             font-size: clamp(0.5rem, calc(var(--tile-size) * 0.048), 0.67rem);
             text-transform: uppercase;
@@ -350,7 +352,7 @@
         }
 
         .launcher-footer {
-            color: var(--text-muted);
+            color: var(--footer-text);
             text-align: center;
             font-size: clamp(0.65rem, 1.5vw, 0.78rem);
             line-height: 1.2;
@@ -939,7 +941,7 @@
             document.documentElement.classList.toggle('light', resolved === 'light');
             themeIcon.innerHTML = ICONS[mode];
             themeButton.setAttribute('aria-label', `Theme: ${mode}`);
-            document.querySelector('meta[name="theme-color"]').content = resolved === 'light' ? '#f5f5f7' : '#09090b';
+            document.querySelector('meta[name="theme-color"]').content = resolved === 'light' ? '#f5f5f7' : '#1b1b1f';
         }
 
         function initTheme() {
