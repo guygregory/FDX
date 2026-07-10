@@ -2,86 +2,95 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#09090b">
     <title>FDX &mdash; Frontier Disambiguation Experience</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* ─── Reset & Tokens ──────────────────────────── */
         :root {
+            color-scheme: dark;
             --bg: #09090b;
-            --surface: rgba(255,255,255,0.04);
-            --surface-hover: rgba(255,255,255,0.07);
-            --surface-card: rgba(255,255,255,0.035);
-            --border: rgba(255,255,255,0.08);
-            --border-hover: rgba(255,255,255,0.14);
+            --surface: rgba(255, 255, 255, 0.04);
+            --surface-hover: rgba(255, 255, 255, 0.075);
+            --surface-card: rgba(255, 255, 255, 0.045);
+            --border: rgba(255, 255, 255, 0.09);
+            --border-hover: rgba(255, 255, 255, 0.2);
             --text: #e4e4e7;
             --text-dim: #a1a1aa;
             --text-muted: #71717a;
             --accent: #a78bfa;
-            --accent-dim: rgba(167,139,250,0.15);
-            --accent-glow: rgba(167,139,250,0.25);
+            --accent-dim: rgba(167, 139, 250, 0.14);
+            --accent-glow: rgba(167, 139, 250, 0.22);
             --green: #34d399;
-            --green-dim: rgba(52,211,153,0.12);
             --cyan: #22d3ee;
-            --cyan-dim: rgba(34,211,238,0.10);
             --title-from: #cbb8f7;
             --title-mid: #b4ccf4;
             --title-to: #9de0f0;
-            --topbar-bg: rgba(9,9,11,0.85);
-            --card-heading: #fafafa;
-            --card-hover-shadow: rgba(167,139,250,0.04);
-            --scene-a: rgba(167,139,250,0.12);
-            --scene-b: rgba(34,211,238,0.06);
-            --grid-line: rgba(255,255,255,0.015);
-            --r: 12px;
-            --r-lg: 20px;
-            --max-w: 960px;
-            --nav-h: 0px;
+            --panel: #111114;
+            --panel-soft: rgba(17, 17, 20, 0.96);
+            --scene-a: rgba(167, 139, 250, 0.13);
+            --scene-b: rgba(34, 211, 238, 0.07);
+            --grid-line: rgba(255, 255, 255, 0.018);
+            --shadow: rgba(0, 0, 0, 0.45);
+            --tile-size: 160px;
+            --tile-gap: 14px;
+            --grid-cols: 4;
+            --grid-width: 682px;
         }
 
         html.light {
+            color-scheme: light;
             --bg: #f5f5f7;
-            --surface: rgba(0,0,0,0.03);
-            --surface-hover: rgba(0,0,0,0.06);
-            --surface-card: rgba(255,255,255,0.7);
-            --border: rgba(0,0,0,0.09);
-            --border-hover: rgba(0,0,0,0.16);
+            --surface: rgba(0, 0, 0, 0.035);
+            --surface-hover: rgba(0, 0, 0, 0.065);
+            --surface-card: rgba(255, 255, 255, 0.76);
+            --border: rgba(0, 0, 0, 0.1);
+            --border-hover: rgba(0, 0, 0, 0.2);
             --text: #1c1c1e;
             --text-dim: #48484a;
-            --text-muted: #8e8e93;
+            --text-muted: #7c7c82;
             --accent: #7c3aed;
-            --accent-dim: rgba(124,58,237,0.10);
-            --accent-glow: rgba(124,58,237,0.18);
+            --accent-dim: rgba(124, 58, 237, 0.1);
+            --accent-glow: rgba(124, 58, 237, 0.16);
             --green: #059669;
             --cyan: #0891b2;
             --title-from: #7c3aed;
             --title-mid: #4266d0;
             --title-to: #0891b2;
-            --topbar-bg: rgba(245,245,247,0.85);
-            --card-heading: #1c1c1e;
-            --card-hover-shadow: rgba(0,0,0,0.06);
-            --scene-a: transparent;
-            --scene-b: transparent;
-            --grid-line: rgba(0,0,0,0);
+            --panel: #ffffff;
+            --panel-soft: rgba(255, 255, 255, 0.96);
+            --scene-a: rgba(124, 58, 237, 0.08);
+            --scene-b: rgba(8, 145, 178, 0.06);
+            --grid-line: rgba(0, 0, 0, 0.018);
+            --shadow: rgba(36, 28, 48, 0.18);
         }
 
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-        html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+        html {
+            height: 100%;
+            -webkit-text-size-adjust: 100%;
+        }
 
         body {
-            font-family: 'Outfit', system-ui, -apple-system, sans-serif;
-            background: var(--bg);
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Outfit', sans-serif;
             color: var(--text);
-            line-height: 1.65;
-            min-height: 100dvh;
-            overflow-x: hidden;
+            background: var(--bg);
+            line-height: 1.6;
         }
 
-        /* ─── Ambient Background ─────────────────────── */
-        .scene {
+        button, a { -webkit-tap-highlight-color: transparent; }
+
+        .scene,
+        .grid-overlay {
             position: fixed;
             inset: 0;
             z-index: -1;
@@ -92,95 +101,91 @@
         .scene::before {
             content: '';
             position: absolute;
-            width: 800px;
-            height: 800px;
-            top: -320px;
+            width: min(800px, 100vw);
+            aspect-ratio: 1;
+            top: -42%;
             left: 50%;
             transform: translateX(-50%);
-            background: radial-gradient(circle, var(--scene-a) 0%, transparent 65%);
+            background: radial-gradient(circle, var(--scene-a), transparent 66%);
         }
 
         .scene::after {
             content: '';
             position: absolute;
-            width: 600px;
-            height: 600px;
-            bottom: -200px;
-            right: -100px;
-            background: radial-gradient(circle, var(--scene-b) 0%, transparent 70%);
+            width: min(600px, 80vw);
+            aspect-ratio: 1;
+            right: -12%;
+            bottom: -34%;
+            background: radial-gradient(circle, var(--scene-b), transparent 70%);
         }
 
         .grid-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            pointer-events: none;
             background-image:
                 linear-gradient(var(--grid-line) 1px, transparent 1px),
                 linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
             background-size: 60px 60px;
-            mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, black 10%, transparent 80%);
+            mask-image: radial-gradient(ellipse 75% 70% at 50% 45%, black 15%, transparent 85%);
         }
 
-        /* ─── Shell ───────────────────────────────────── */
-        .shell {
-            max-width: var(--max-w);
-            margin: 0 auto;
-            padding: 0 clamp(16px, 4vw, 32px);
+        .launcher {
+            height: 100vh;
+            height: 100dvh;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            grid-template-rows: auto minmax(0, 1fr) auto;
+            gap: clamp(8px, 1.6vh, 16px);
+            padding:
+                max(14px, env(safe-area-inset-top))
+                max(14px, env(safe-area-inset-right))
+                max(12px, env(safe-area-inset-bottom))
+                max(14px, env(safe-area-inset-left));
         }
 
-        /* ─── Sticky Header ───────────────────────────── */
-        .topbar {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: var(--topbar-bg);
-            backdrop-filter: blur(16px) saturate(1.4);
-            border-bottom: none;
-            padding: 12px 0 10px;
-        }
-
-        .topbar-title {
-            text-align: center;
-            margin-bottom: 16px;
-            padding-top: 8px;
-        }
-
-        .theme-toggle {
-            position: fixed;
-            right: clamp(16px, 4vw, 32px);
-            bottom: 24px;
-            z-index: 200;
-            display: inline-flex;
+        .masthead {
+            position: relative;
+            display: flex;
             align-items: center;
             justify-content: center;
-            width: 34px;
-            height: 34px;
+            width: min(var(--grid-width), 100%);
+            margin: 0 auto clamp(14px, 2vh, 24px);
+            min-height: 44px;
+            text-align: center;
+        }
+
+        .brand {
+            width: 100%;
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .brand h1 {
+            font-size: clamp(1.35rem, calc(var(--grid-width) / 20), 3rem);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: 0;
+            white-space: nowrap;
+            background: linear-gradient(135deg, var(--title-from), var(--title-to));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .icon-button {
+            display: inline-grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
             border: 1px solid var(--border);
             border-radius: 8px;
-            background: var(--surface);
             color: var(--text-muted);
+            background: var(--surface);
             cursor: pointer;
-            transition: color 0.2s, background 0.2s, border-color 0.2s;
+            transition: color 180ms, background 180ms, border-color 180ms, transform 180ms;
         }
 
-        @media (hover: hover) {
-            .theme-toggle:hover {
-                color: var(--text);
-                background: var(--surface-hover);
-                border-color: var(--border-hover);
-            }
-        }
-
-        .theme-toggle:focus-visible {
-            color: var(--text);
-            outline: none;
-            border-color: var(--accent);
-        }
-
-        .theme-toggle svg {
-            width: 18px;
-            height: 18px;
+        .icon-button svg {
+            width: 19px;
+            height: 19px;
             fill: none;
             stroke: currentColor;
             stroke-width: 1.8;
@@ -188,316 +193,394 @@
             stroke-linejoin: round;
         }
 
-        .topbar-title h1 {
-            font-size: clamp(1.75rem, 4.8vw, 2.4rem);
-            font-weight: 700;
-            letter-spacing: -0.025em;
-            line-height: 1.2;
-            white-space: nowrap;
+        .theme-toggle {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
         }
 
-        .title-link {
-            text-decoration: none;
-            color: inherit;
-            background: linear-gradient(135deg, var(--title-from), var(--title-to));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .icon-button:focus-visible,
+        .topic-tile:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
         }
 
-        .topbar-nav {
+        .tile-stage {
+            min-height: 0;
+            display: grid;
+            place-items: start center;
             overflow: hidden;
         }
 
-        .topbar-inner {
-            width: 100%;
-            max-width: 1160px;
-            margin: 0 auto;
-            padding: 0 clamp(12px, 2vw, 20px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            overflow-x: auto;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
+        .topic-grid {
+            display: grid;
+            grid-template-columns: repeat(var(--grid-cols), var(--tile-size));
+            grid-auto-rows: var(--tile-size);
+            gap: var(--tile-gap);
+            width: max-content;
+            max-width: 100%;
+            list-style: none;
         }
 
-        .topbar-inner::-webkit-scrollbar { display: none; }
+        .topic-grid > li { min-width: 0; }
 
-        .topbar-inner a {
-            flex: 0 0 auto;
-            display: inline-flex;
+        .topic-tile {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 8px;
+            padding: clamp(11px, calc(var(--tile-size) * 0.11), 24px);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            background: var(--surface-card);
+            box-shadow: 0 12px 35px transparent;
+            font: inherit;
+            text-align: left;
+            cursor: pointer;
+            isolation: isolate;
+            transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 220ms, background 220ms, box-shadow 220ms;
+            animation: tile-enter 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+            animation-delay: calc(var(--tile-index) * 35ms);
+        }
+
+        .topic-tile::before {
+            content: '';
+            position: absolute;
+            inset: 0 0 auto;
+            height: 2px;
+            z-index: -1;
+            opacity: 0.7;
+            background: linear-gradient(90deg, transparent, var(--tile-accent), transparent);
+        }
+
+        .topic-tile::after {
+            content: '';
+            position: absolute;
+            width: 70%;
+            aspect-ratio: 1;
+            right: -35%;
+            bottom: -45%;
+            z-index: -1;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--tile-glow), transparent 70%);
+            transition: transform 260ms;
+        }
+
+        .tile-label {
+            width: 100%;
+            overflow-wrap: anywhere;
+            font-size: clamp(0.72rem, calc(var(--tile-size) * 0.105), 1.35rem);
+            font-weight: 600;
+            line-height: 1.12;
+            letter-spacing: 0;
+        }
+
+        .tile-action {
+            display: flex;
             align-items: center;
             gap: 6px;
-            padding: 6px 10px;
-            font-size: 0.78rem;
-            font-weight: 500;
             color: var(--text-muted);
-            text-decoration: none;
-            border-radius: 8px;
-            border: 1px solid transparent;
-            transition: color 0.2s, background 0.2s, border-color 0.2s;
-            white-space: nowrap;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.5rem, calc(var(--tile-size) * 0.048), 0.67rem);
+            text-transform: uppercase;
+        }
+
+        .tile-action svg {
+            width: clamp(12px, calc(var(--tile-size) * 0.1), 18px);
+            height: clamp(12px, calc(var(--tile-size) * 0.1), 18px);
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: transform 180ms;
         }
 
         @media (hover: hover) {
-            .topbar-inner a:hover {
+            .icon-button:hover {
                 color: var(--text);
                 background: var(--surface-hover);
-                border-color: var(--border);
+                border-color: var(--border-hover);
             }
+
+            .topic-tile:hover {
+                transform: translateY(-4px);
+                border-color: var(--tile-accent);
+                background: var(--surface-hover);
+                box-shadow: 0 18px 44px var(--shadow);
+            }
+
+            .topic-tile:hover::after { transform: scale(1.25); }
+            .topic-tile:hover .tile-action { color: var(--tile-accent); }
+            .topic-tile:hover .tile-action svg { transform: translate(2px, -2px); }
         }
 
-        .topbar-inner a:focus-visible {
-            color: var(--text);
-            background: var(--surface-hover);
-            border-color: var(--border);
-            outline: none;
+        .topic-tile:active { transform: scale(0.97); }
+
+        .compact-tiles .topic-tile {
+            justify-content: center;
+            padding: 6px;
         }
 
-        .topbar-inner a.active {
-            color: var(--card-heading);
-            background: var(--accent-dim);
-            border-color: rgba(167,139,250,0.22);
+        .compact-tiles .tile-action {
+            display: none;
         }
 
-        /* ─── Cards ───────────────────────────────────── */
-        .cards {
-            padding: 20px 0 80px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+        .compact-tiles .tile-label {
+            font-size: clamp(0.58rem, calc(var(--tile-size) * 0.16), 0.72rem);
+            text-align: center;
         }
 
-        .card {
-            position: relative;
-            background: var(--surface-card);
-            border: 1px solid var(--border);
-            border-radius: var(--r-lg);
-            overflow: hidden;
-            scroll-margin-top: calc(var(--nav-h) + 32px);
-            transition: border-color 0.3s, box-shadow 0.3s;
+        .compact-tiles .tile-label::after {
+            content: '\2197';
+            display: block;
+            margin-top: 3px;
+            color: var(--tile-accent);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7em;
+            font-weight: 400;
         }
 
-        .card:hover {
-            border-color: var(--border-hover);
-            box-shadow: 0 0 40px var(--card-hover-shadow);
-        }
-
-        .card-accent {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--accent), transparent);
-            opacity: 0.4;
-        }
-
-        .card-inner {
-            padding: clamp(20px, 3vw, 36px);
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .card-header h2 {
-            font-size: clamp(1.5rem, 3.4vw, 2rem);
-            font-weight: 600;
-            letter-spacing: -0.02em;
-            color: var(--card-heading);
+        .launcher-footer {
+            color: var(--text-muted);
+            text-align: center;
+            font-size: clamp(0.65rem, 1.5vw, 0.78rem);
             line-height: 1.2;
         }
 
-        .card-source {
+        .topic-dialog {
+            width: 100%;
+            max-width: none;
+            height: 100%;
+            max-height: none;
+            inset: 0;
+            overflow: hidden;
+            border: 0;
+            color: var(--text);
+            background: transparent;
+        }
+
+        .topic-dialog::backdrop {
+            background: rgba(4, 4, 6, 0.78);
+            backdrop-filter: blur(12px);
+        }
+
+        .dialog-shell {
+            width: min(920px, 100%);
+            height: 100vh;
+            height: 100dvh;
+            margin: 0 auto;
+            display: grid;
+            grid-template-rows: auto minmax(0, 1fr);
+            overflow: hidden;
+            border-inline: 1px solid var(--border);
+            background: var(--panel-soft);
+            box-shadow: 0 0 80px var(--shadow);
+            animation: dialog-enter 280ms cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .dialog-header {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            min-height: 78px;
+            padding:
+                max(14px, env(safe-area-inset-top))
+                max(16px, env(safe-area-inset-right))
+                14px
+                max(20px, env(safe-area-inset-left));
+            border-bottom: 1px solid var(--border);
+            background: var(--panel-soft);
+            backdrop-filter: blur(16px);
+        }
+
+        .dialog-heading { min-width: 0; }
+
+        .dialog-title {
+            overflow-wrap: anywhere;
+            color: var(--text);
+            font-size: clamp(1.28rem, 4vw, 1.9rem);
+            font-weight: 600;
+            line-height: 1.1;
+            letter-spacing: 0;
+        }
+
+        .dialog-close {
+            flex: 0 0 auto;
             margin-left: auto;
-            flex-shrink: 0;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.68rem;
-            color: var(--text-muted);
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 3px 10px;
+            color: var(--text);
+            background: var(--surface-hover);
         }
 
-        /* ─── Markdown Content ────────────────────────── */
+        .dialog-scroll {
+            min-height: 0;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-color: var(--border-hover) transparent;
+        }
+
+        .article-body {
+            width: min(760px, 100%);
+            margin: 0 auto;
+            padding:
+                clamp(24px, 5vw, 52px)
+                max(20px, env(safe-area-inset-right))
+                max(48px, calc(env(safe-area-inset-bottom) + 28px))
+                max(20px, env(safe-area-inset-left));
+        }
+
         .md {
-            font-size: 0.95rem;
             color: var(--text-dim);
-            text-align: justify;
+            font-size: clamp(0.94rem, 2vw, 1rem);
+            line-height: 1.7;
         }
 
-        .md h1 { display: none; }
+        .md > h1 { display: none; }
 
         .md h2 {
-            font-size: 0.82rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text);
-            margin: 28px 0 12px;
-            padding-bottom: 6px;
+            margin: 30px 0 12px;
+            padding-bottom: 7px;
             border-bottom: 1px solid var(--border);
+            color: var(--text);
+            font-size: 0.84rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
         }
 
-        .md h2:first-of-type {
-            margin-top: 0;
-        }
+        .md h2:first-of-type { margin-top: 0; }
 
         .md h3 {
-            font-size: 0.92rem;
-            font-weight: 600;
+            margin: 22px 0 8px;
             color: var(--text);
-            margin: 20px 0 8px;
-        }
-
-        .md p {
-            margin: 0 0 12px;
-        }
-
-        .md ul {
-            margin: 0 0 14px;
-            padding-left: 20px;
-        }
-
-        .md li {
-            margin-top: 6px;
-        }
-
-        .md li::marker {
-            color: var(--accent);
-        }
-
-        .md strong {
-            color: var(--text);
+            font-size: 0.98rem;
             font-weight: 600;
         }
+
+        .md p { margin-bottom: 14px; }
+        .md ul { margin: 0 0 16px; padding-left: 22px; }
+        .md li { margin-top: 7px; }
+        .md li::marker { color: var(--accent); }
+        .md strong { color: var(--text); font-weight: 600; }
 
         .md code {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85em;
-            background: var(--surface);
+            padding: 0.1em 0.4em;
             border: 1px solid var(--border);
             border-radius: 4px;
-            padding: 0.1em 0.4em;
             color: var(--cyan);
+            background: var(--surface);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
         }
 
         .md a {
             color: var(--accent);
-            text-decoration: none;
+            border-bottom: 1px solid var(--accent-dim);
             font-weight: 500;
-            border-bottom: 1px solid rgba(167,139,250,0.2);
-            transition: border-color 0.2s;
+            text-decoration: none;
         }
+
+        .md a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
         @media (hover: hover) {
             .md a:hover { border-bottom-color: var(--accent); }
         }
 
-        .md a:focus-visible {
-            border-bottom-color: var(--accent);
-            outline: none;
-        }
-
-        /* Resources block */
         .md .resources-block {
-            margin-top: 24px;
-            padding: 16px;
-            background: var(--surface);
+            margin-top: 28px;
+            padding: 18px;
             border: 1px solid var(--border);
-            border-radius: var(--r);
-            border-left: 2px solid var(--border);
+            border-left: 2px solid var(--accent);
+            border-radius: 8px;
+            background: var(--surface);
         }
 
         .md .resources-block h2 {
             margin-top: 0;
-            border-bottom: none;
             padding-bottom: 0;
+            border: 0;
             color: var(--title-mid);
         }
 
-        .md .resources-block a {
-            color: var(--title-mid);
-            border-bottom-color: var(--accent-dim);
-        }
-
-        @media (hover: hover) {
-            .md .resources-block a:hover {
-                border-bottom-color: var(--title-mid);
-            }
-        }
-
-        /* Loading */
-        .card-loading {
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             color: var(--text-muted);
-            font-size: 0.9rem;
-            animation: blink 1.2s step-end infinite;
+            font-size: 0.94rem;
         }
 
-        .card-loading::after { content: '...'; }
-
-        @keyframes blink {
-            50% { opacity: 0.4; }
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border-hover);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 750ms linear infinite;
         }
 
-        /* Card enter animation */
-        .card {
-            opacity: 0;
-            transform: translateY(24px);
-            transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1),
-                        transform 0.5s cubic-bezier(0.16,1,0.3,1),
-                        border-color 0.3s, box-shadow 0.3s;
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes tile-enter {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes dialog-enter {
+            from { opacity: 0; transform: translateY(16px) scale(0.99); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        .card.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* ─── Footer ──────────────────────────────────── */
-        footer {
-            text-align: center;
-            padding: 0 24px 48px;
-            color: var(--text-muted);
-            font-size: 0.82rem;
-        }
-
-        footer .divider {
-            width: 40px;
-            height: 1px;
-            background: var(--border);
-            margin: 0 auto 16px;
-        }
-
-        /* ─── Responsive ──────────────────────────────── */
         @media (max-width: 640px) {
-            .card-source { display: none; }
-            .card-header { gap: 10px; }
+            .launcher {
+                gap: 8px;
+                padding-top: max(10px, env(safe-area-inset-top));
+            }
+
+            .masthead {
+                min-height: 38px;
+                margin-bottom: 10px;
+            }
+            .brand h1 { font-size: clamp(0.85rem, calc(var(--grid-width) / 20), 1.45rem); }
             .theme-toggle { display: none; }
-            .topbar-title h1 { font-size: clamp(1.15rem, 5.4vw, 1.65rem); }
-            .title-abbr { display: none; }
-            .topbar { background: var(--bg); }
+            .launcher-footer { font-size: 0.64rem; }
             .grid-overlay { display: none; }
-            .scene { display: none; }
+            .scene::after { display: none; }
+
+            .dialog-shell {
+                width: 100%;
+                border: 0;
+            }
+
+            .dialog-header { min-height: 68px; }
+            .dialog-close { width: 44px; height: 44px; }
+        }
+
+        @media (max-height: 480px) {
+            .launcher { gap: 5px; padding-block: 6px; }
+            .masthead {
+                min-height: 34px;
+                margin-bottom: 4px;
+            }
+            .launcher-footer { display: none; }
+            .brand h1 { font-size: 1.05rem; }
         }
 
         @media (prefers-reduced-motion: reduce) {
-            html { scroll-behavior: auto; }
-            .card,
-            .topbar-inner a {
-                transition: none;
-                animation: none;
-                opacity: 1;
-                transform: none;
+            *, *::before, *::after {
+                scroll-behavior: auto !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
             }
         }
     </style>
@@ -506,312 +589,396 @@
     <div class="scene" aria-hidden="true"></div>
     <div class="grid-overlay" aria-hidden="true"></div>
 
-    <!-- Theme toggle -->
-    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle theme">
-        <svg id="themeIcon" viewBox="0 0 24 24"></svg>
-    </button>
+    <main class="launcher" id="launcher">
+        <header class="masthead" id="masthead">
+            <a class="brand" href="https://fdx.guygregory.com/">
+                <h1>Frontier Disambiguation Experience (FDX)</h1>
+            </a>
+            <button class="icon-button theme-toggle" id="themeToggle" type="button" aria-label="Theme: system" title="Change theme">
+                <svg id="themeIcon" viewBox="0 0 24 24" aria-hidden="true"></svg>
+            </button>
+        </header>
 
-    <!-- Sticky Header + Nav -->
-    <header class="topbar" aria-label="Frontier topics">
-        <div class="topbar-title shell">
-            <h1><a href="https://fdx.guygregory.com/" class="title-link">Frontier Disambiguation Experience<span class="title-abbr"> (FDX)</span></a></h1>
+        <section class="tile-stage" id="tileStage" aria-label="Frontier topics">
+            <ul class="topic-grid" id="topicGrid"></ul>
+        </section>
+
+        <footer class="launcher-footer" id="launcherFooter">Created by Guy Gregory and GitHub Copilot</footer>
+    </main>
+
+    <dialog class="topic-dialog" id="topicDialog" aria-labelledby="dialogTitle">
+        <div class="dialog-shell">
+            <header class="dialog-header">
+                <div class="dialog-heading">
+                    <h2 class="dialog-title" id="dialogTitle"></h2>
+                </div>
+                <button class="icon-button dialog-close" id="dialogClose" type="button" aria-label="Close topic" title="Close">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M18 6 6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </header>
+            <div class="dialog-scroll" id="dialogScroll">
+                <article class="article-body">
+                    <div class="md" id="dialogContent" aria-live="polite"></div>
+                </article>
+            </div>
         </div>
-        <nav class="topbar-nav">
-            <div class="topbar-inner" id="topNav"></div>
-        </nav>
-    </header>
-
-    <!-- Content -->
-    <div class="shell">
-        <div class="cards" id="cardContainer"></div>
-    </div>
-
-    <footer>
-        <div class="divider" aria-hidden="true"></div>
-        Created by Guy Gregory and GitHub Copilot
-    </footer>
+    </dialog>
 
     <script>
     (() => {
         'use strict';
 
         const TOPICS = [
-            { id: 'frontier-firm', label: 'Frontier Firm', src: 'frontierfirm.md' },
-            { id: 'frontier-professional', label: 'Frontier Professional', src: 'frontierprofessional.md' },
-            { id: 'frontier-program', label: 'Frontier Program', src: 'frontierprogram.md' },
-            { id: 'frontier-partner', label: 'Frontier Partner', src: 'frontierpartner.md' },
-            { id: 'frontier-engineer', label: 'Frontier Engineer', src: 'frontierengineer.md' },
-            { id: 'frontier-distributor', label: 'Frontier Distributor', src: 'frontierdistributor.md' },
-            { id: 'frontier-ai', label: 'Frontier AI', src: 'frontierai.md' },
-            { id: 'frontier-model-forum', label: 'Frontier Model Forum', src: 'frontiermodelforum.md' },
-            { id: 'openai-frontier', label: 'OpenAI Frontier', src: 'openaifrontier.md' }
+            { id: 'frontier-firm', src: 'frontierfirm.md' },
+            { id: 'frontier-professional', src: 'frontierprofessional.md' },
+            { id: 'frontier-program', src: 'frontierprogram.md' },
+            { id: 'frontier-partner', src: 'frontierpartner.md' },
+            { id: 'frontier-engineer', src: 'frontierengineer.md' },
+            { id: 'frontier-distributor', src: 'frontierdistributor.md' },
+            { id: 'frontier-ai', src: 'frontierai.md' },
+            { id: 'frontier-model-forum', src: 'frontiermodelforum.md' },
+            { id: 'openai-frontier', src: 'openaifrontier.md' }
         ];
 
-        const nav = document.getElementById('topNav');
-        const container = document.getElementById('cardContainer');
+        const TILE_COLORS = [
+            ['#a78bfa', 'rgba(167,139,250,0.2)'],
+            ['#22d3ee', 'rgba(34,211,238,0.18)'],
+            ['#34d399', 'rgba(52,211,153,0.17)'],
+            ['#fbbf24', 'rgba(251,191,36,0.14)'],
+            ['#60a5fa', 'rgba(96,165,250,0.18)']
+        ];
 
-        /* ── Build DOM ───────────────────────────────── */
-        function build() {
-            const navFrag = document.createDocumentFragment();
-            const cardFrag = document.createDocumentFragment();
+        const ICONS = {
+            dark: '<path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/>',
+            light: '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>',
+            system: '<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>'
+        };
 
-            TOPICS.forEach((t, i) => {
-                // nav link
-                const a = document.createElement('a');
-                a.href = `#${t.id}`;
-                a.dataset.target = t.id;
-                a.innerHTML = esc(t.label);
-                navFrag.appendChild(a);
+        const MODES = ['system', 'dark', 'light'];
+        const cache = new Map();
+        const grid = document.getElementById('topicGrid');
+        const stage = document.getElementById('tileStage');
+        const dialog = document.getElementById('topicDialog');
+        const dialogTitle = document.getElementById('dialogTitle');
+        const dialogContent = document.getElementById('dialogContent');
+        const dialogScroll = document.getElementById('dialogScroll');
+        const closeButton = document.getElementById('dialogClose');
+        const themeButton = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const systemTheme = window.matchMedia('(prefers-color-scheme: light)');
+        let activeTopic = null;
+        let opener = null;
+        let resizeFrame = 0;
+        let requestToken = 0;
+        let historyClosing = false;
 
-                // card
-                const article = document.createElement('article');
-                article.className = 'card';
-                article.id = t.id;
-                article.setAttribute('aria-busy', 'true');
-                article.innerHTML = `
-                    <div class="card-accent" aria-hidden="true"></div>
-                    <div class="card-inner">
-                        <header class="card-header">
-                            <h2>${esc(t.label)}</h2>
-                            <span class="card-source">${esc(t.src)}</span>
-                        </header>
-                        <div class="md" aria-live="polite">
-                            <p class="card-loading">Loading</p>
-                        </div>
-                    </div>`;
-                cardFrag.appendChild(article);
-            });
-
-            nav.appendChild(navFrag);
-            container.appendChild(cardFrag);
-        }
-
-        /* ── Fetch & Render Markdown ─────────────────── */
-        async function hydrate() {
-            const cards = Array.from(document.querySelectorAll('.card[aria-busy]'));
-            await Promise.all(cards.map(async card => {
-                const topic = TOPICS.find(t => t.id === card.id);
-                if (!topic) return;
-                const mdEl = card.querySelector('.md');
-                try {
-                    const res = await fetch(topic.src, { cache: 'no-store' });
-                    if (!res.ok) throw new Error(res.status);
-                    mdEl.innerHTML = md(await res.text());
-                    wrapResources(mdEl);
-                } catch {
-                    mdEl.innerHTML = '<p>Unable to load content.</p>';
-                } finally {
-                    card.removeAttribute('aria-busy');
-                }
+        async function loadTopics() {
+            await Promise.all(TOPICS.map(async topic => {
+                const response = await fetch(topic.src, { cache: 'no-store' });
+                if (!response.ok) throw new Error(`Unable to load ${topic.src}: HTTP ${response.status}`);
+                const html = md(await response.text());
+                const content = document.createElement('div');
+                content.innerHTML = html;
+                const title = content.querySelector('h1')?.textContent.trim();
+                if (!title) throw new Error(`Unable to find an H1 title in ${topic.src}`);
+                topic.label = title;
+                cache.set(topic.id, html);
             }));
         }
 
-        /* ── Markdown parser ─────────────────────────── */
+        function buildTiles() {
+            const fragment = document.createDocumentFragment();
+            TOPICS.forEach((topic, index) => {
+                const item = document.createElement('li');
+                const button = document.createElement('button');
+                const color = TILE_COLORS[index % TILE_COLORS.length];
+                button.className = 'topic-tile';
+                button.type = 'button';
+                button.dataset.topic = topic.id;
+                button.style.setProperty('--tile-index', index);
+                button.style.setProperty('--tile-accent', color[0]);
+                button.style.setProperty('--tile-glow', color[1]);
+                button.setAttribute('aria-haspopup', 'dialog');
+                button.innerHTML = `
+                    <span class="tile-label">${esc(topic.label)}</span>
+                    <span class="tile-action">Read more
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
+                    </span>`;
+                button.addEventListener('click', () => openTopic(topic, button, true));
+                item.appendChild(button);
+                fragment.appendChild(item);
+            });
+            grid.appendChild(fragment);
+        }
+
+        function fitGrid() {
+            const count = TOPICS.length;
+            if (!count) return;
+            const bounds = stage.getBoundingClientRect();
+            const narrow = bounds.width < 640;
+            const minColumns = narrow ? 2 : Math.min(4, count);
+            const maxColumns = Math.min(4, count);
+            const gap = bounds.width < 430 ? 8 : bounds.height < 520 ? 8 : 14;
+            let best = { columns: maxColumns, size: 0 };
+
+            for (let columns = minColumns; columns <= maxColumns; columns += 1) {
+                const rows = Math.ceil(count / columns);
+                const widthSize = (bounds.width - gap * (columns - 1)) / columns;
+                const heightSize = (bounds.height - gap * (rows - 1)) / rows;
+                const size = Math.floor(Math.min(widthSize, heightSize, 210));
+                if (size > best.size || (size === best.size && columns > best.columns)) {
+                    best = { columns, size };
+                }
+            }
+
+            document.documentElement.style.setProperty('--grid-cols', best.columns);
+            document.documentElement.style.setProperty('--tile-size', `${Math.max(42, best.size)}px`);
+            document.documentElement.style.setProperty('--tile-gap', `${gap}px`);
+            document.documentElement.style.setProperty('--grid-width', `${best.columns * Math.max(42, best.size) + gap * (best.columns - 1)}px`);
+            document.documentElement.classList.toggle('compact-tiles', best.size < 76);
+        }
+
+        function scheduleFit() {
+            cancelAnimationFrame(resizeFrame);
+            resizeFrame = requestAnimationFrame(fitGrid);
+        }
+
+        async function openTopic(topic, sourceButton, updateHistory) {
+            if (!topic) return;
+            activeTopic = topic;
+            opener = sourceButton || grid.querySelector(`[data-topic="${topic.id}"]`);
+            dialogTitle.textContent = topic.label;
+            dialogContent.innerHTML = '<p class="status"><span class="spinner" aria-hidden="true"></span>Loading topic</p>';
+            dialogScroll.scrollTop = 0;
+
+            if (!dialog.open) dialog.showModal();
+            if (updateHistory && window.location.hash !== `#${topic.id}`) {
+                history.pushState({ topic: topic.id }, '', `#${topic.id}`);
+            }
+
+            const token = ++requestToken;
+            if (cache.has(topic.id)) {
+                dialogContent.innerHTML = cache.get(topic.id);
+                wrapResources(dialogContent);
+                return;
+            }
+
+            try {
+                const response = await fetch(topic.src, { cache: 'no-store' });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const html = md(await response.text());
+                cache.set(topic.id, html);
+                if (token !== requestToken || activeTopic?.id !== topic.id) return;
+                dialogContent.innerHTML = html;
+                wrapResources(dialogContent);
+            } catch (error) {
+                if (token !== requestToken) return;
+                dialogContent.innerHTML = '<p class="status">Unable to load this topic. Serve this folder over HTTP and try again.</p>';
+                console.error(`Unable to load ${topic.src}`, error);
+            }
+        }
+
+        function requestClose() {
+            if (!dialog.open) return;
+            const hashTopic = TOPICS.find(topic => `#${topic.id}` === window.location.hash);
+            if (hashTopic && history.state?.topic === hashTopic.id) {
+                historyClosing = true;
+                history.back();
+                window.setTimeout(() => {
+                    if (historyClosing) {
+                        historyClosing = false;
+                        history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+                        closeDialog();
+                    }
+                }, 250);
+                return;
+            }
+            if (hashTopic) {
+                history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+            }
+            closeDialog();
+        }
+
+        function closeDialog() {
+            requestToken += 1;
+            activeTopic = null;
+            if (dialog.open) dialog.close();
+        }
+
+        function syncFromHash() {
+            historyClosing = false;
+            const id = decodeURIComponent(window.location.hash.slice(1));
+            const topic = TOPICS.find(item => item.id === id);
+            if (topic) {
+                if (activeTopic?.id !== id || !dialog.open) openTopic(topic, null, false);
+            } else {
+                closeDialog();
+            }
+        }
+
         function md(raw) {
             const lines = raw.replace(/\r\n/g, '\n').split('\n');
             let out = '';
-            let buf = [];
+            let buffer = [];
             let listDepth = -1;
-            const liOpen = [];
+            const openItems = [];
 
-            const flush = () => { if (buf.length) { out += `<p>${inline(buf.join(' '))}</p>`; buf = []; } };
-            const closeLi = depth => { if (liOpen[depth]) { out += '</li>'; liOpen[depth] = false; } };
-            const openUl = () => { out += '<ul>'; listDepth += 1; liOpen[listDepth] = false; };
-            const closeUl = () => { closeLi(listDepth); out += '</ul>'; liOpen.pop(); listDepth -= 1; };
-            const closeAllLists = () => { while (listDepth >= 0) closeUl(); };
+            const flush = () => {
+                if (buffer.length) {
+                    out += `<p>${inline(buffer.join(' '))}</p>`;
+                    buffer = [];
+                }
+            };
+            const closeItem = depth => {
+                if (openItems[depth]) {
+                    out += '</li>';
+                    openItems[depth] = false;
+                }
+            };
+            const openList = () => {
+                out += '<ul>';
+                listDepth += 1;
+                openItems[listDepth] = false;
+            };
+            const closeList = () => {
+                closeItem(listDepth);
+                out += '</ul>';
+                openItems.pop();
+                listDepth -= 1;
+            };
+            const closeLists = () => {
+                while (listDepth >= 0) closeList();
+            };
 
             for (const rawLine of lines) {
                 const line = rawLine.trim();
-                if (!line) { flush(); closeAllLists(); continue; }
-
-                const hm = line.match(/^(#{1,3})\s+(.*)$/);
-                if (hm) { flush(); closeAllLists(); const l = hm[1].length; out += `<h${l}>${inline(hm[2])}</h${l}>`; continue; }
-
-                const lm = rawLine.match(/^([ \t]*)[-*]\s+(.*)$/);
-                if (lm) {
+                if (!line) {
                     flush();
-                    let depth = Math.floor(lm[1].replace(/\t/g, '    ').length / 4);
-                    if (depth > listDepth + 1) depth = listDepth + 1;
-                    while (listDepth < depth) openUl();
-                    while (listDepth > depth) closeUl();
-                    if (listDepth < 0) openUl();
-                    closeLi(depth);
-                    out += `<li>${inline(lm[2])}`;
-                    liOpen[depth] = true;
+                    closeLists();
                     continue;
                 }
 
-                closeAllLists();
-                buf.push(line);
+                const heading = line.match(/^(#{1,3})\s+(.*)$/);
+                if (heading) {
+                    flush();
+                    closeLists();
+                    const level = heading[1].length;
+                    out += `<h${level}>${inline(heading[2])}</h${level}>`;
+                    continue;
+                }
+
+                const listItem = rawLine.match(/^([ \t]*)[-*]\s+(.*)$/);
+                if (listItem) {
+                    flush();
+                    let depth = Math.floor(listItem[1].replace(/\t/g, '    ').length / 4);
+                    if (depth > listDepth + 1) depth = listDepth + 1;
+                    while (listDepth < depth) openList();
+                    while (listDepth > depth) closeList();
+                    if (listDepth < 0) openList();
+                    closeItem(depth);
+                    out += `<li>${inline(listItem[2])}`;
+                    openItems[depth] = true;
+                    continue;
+                }
+
+                closeLists();
+                buffer.push(line);
             }
+
             flush();
-            closeAllLists();
+            closeLists();
             return out;
         }
 
-        function inline(t) {
-            let s = esc(t);
-            s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
-            s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-            s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
-            return s;
+        function inline(value) {
+            let output = esc(value);
+            output = output.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+            output = output.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            output = output.replace(/`([^`]+)`/g, '<code>$1</code>');
+            return output;
         }
 
-        function esc(v) {
-            return v.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+        function esc(value) {
+            return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
         }
 
-        /* ── Wrap Resources sections ─────────────────── */
-        function wrapResources(el) {
-            el.querySelectorAll('h2').forEach(h => {
-                if (h.textContent.trim().toLowerCase() !== 'resources') return;
-                const wrap = document.createElement('section');
-                wrap.className = 'resources-block';
-                h.parentNode.insertBefore(wrap, h);
-                let cur = h;
-                while (cur) {
-                    const next = cur.nextElementSibling;
-                    wrap.appendChild(cur);
+        function wrapResources(element) {
+            element.querySelectorAll('h2').forEach(heading => {
+                if (heading.textContent.trim().toLowerCase() !== 'resources') return;
+                const section = document.createElement('section');
+                section.className = 'resources-block';
+                heading.parentNode.insertBefore(section, heading);
+                let current = heading;
+                while (current) {
+                    const next = current.nextElementSibling;
+                    section.appendChild(current);
                     if (!next || next.tagName === 'H2') break;
-                    cur = next;
+                    current = next;
                 }
             });
         }
 
-        /* ── Sticky nav offset ───────────────────────── */
-        function measureNav() {
-            const bar = document.querySelector('.topbar');
-            if (bar) document.documentElement.style.setProperty('--nav-h', bar.offsetHeight + 'px');
-        }
-
-        /* ── Scroll-reveal cards ─────────────────────── */
-        function initReveal() {
-            if (!('IntersectionObserver' in window)) {
-                document.querySelectorAll('.card').forEach(c => c.classList.add('visible'));
-                return;
-            }
-            const io = new IntersectionObserver((entries, obs) => {
-                entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
-            }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
-            document.querySelectorAll('.card').forEach(c => io.observe(c));
-        }
-
-        /* ── Active nav tracking ─────────────────────── */
-        function initActiveNav() {
-            if (!('IntersectionObserver' in window)) return;
-            const links = Array.from(nav.querySelectorAll('a[data-target]'));
-            const sections = links.map(l => document.getElementById(l.dataset.target)).filter(Boolean);
-            let clickLock = false;
-
-            const setActive = id => {
-                links.forEach(l => {
-                    const on = l.dataset.target === id;
-                    l.classList.toggle('active', on);
-                    on ? l.setAttribute('aria-current', 'true') : l.removeAttribute('aria-current');
-                    if (on) l.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
-                });
-            };
-
-            const io = new IntersectionObserver(entries => {
-                if (clickLock) return;
-                const vis = entries.filter(e => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-                if (vis.length) setActive(vis[0].target.id);
-            }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
-
-            sections.forEach(s => io.observe(s));
-
-            // Click handler
-            nav.addEventListener('click', e => {
-                const a = e.target.closest('a[data-target]');
-                if (!a) return;
-                e.preventDefault();
-                const target = document.getElementById(a.dataset.target);
-                if (!target) return;
-                clickLock = true;
-                setActive(a.dataset.target);
-                scrollToCard(target);
-                history.replaceState(null, '', `#${a.dataset.target}`);
-                setTimeout(() => { clickLock = false; }, 1000);
-            });
-        }
-
-        /* ── Scroll helper ───────────────────────────── */
-        function scrollToCard(el) {
-            const bar = document.querySelector('.topbar');
-            const gap = 20;
-            const top = el.getBoundingClientRect().top + window.scrollY - (bar ? bar.offsetHeight : 0) - gap;
-            window.scrollTo({ top, behavior: 'smooth' });
-        }
-
-        /* ── Initial hash ────────────────────────────── */
-        function jumpHash() {
-            const { hash } = window.location;
-            if (!hash) return;
-            const el = document.querySelector(hash);
-            if (el) requestAnimationFrame(() => scrollToCard(el));
-        }
-
-        /* ── Theme toggle ─────────────────────────────── */
-        const ICONS = {
-            dark: '<path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/>',
-            light: '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>',
-            system: '<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>'
-        };
-        const MODES = ['system', 'dark', 'light'];
-        const themeBtn = document.getElementById('themeToggle');
-        const themeIcon = document.getElementById('themeIcon');
-
-        function getPreferred() {
+        function preferredMode() {
             return localStorage.getItem('fdx-theme') || 'system';
         }
 
-        function resolveTheme(mode) {
-            if (mode === 'system') return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-            return mode;
-        }
-
         function applyTheme(mode) {
-            const resolved = resolveTheme(mode);
+            const resolved = mode === 'system' ? (systemTheme.matches ? 'light' : 'dark') : mode;
             document.documentElement.classList.toggle('light', resolved === 'light');
             themeIcon.innerHTML = ICONS[mode];
-            themeBtn.setAttribute('aria-label', `Theme: ${mode}`);
-        }
-
-        const MOBILE_BP = 640;
-
-        function isMobile() {
-            return window.innerWidth <= MOBILE_BP;
+            themeButton.setAttribute('aria-label', `Theme: ${mode}`);
+            document.querySelector('meta[name="theme-color"]').content = resolved === 'light' ? '#f5f5f7' : '#09090b';
         }
 
         function initTheme() {
-            applyTheme(isMobile() ? 'system' : getPreferred());
-            themeBtn.addEventListener('click', () => {
-                if (isMobile()) return;
-                const cur = getPreferred();
-                const next = MODES[(MODES.indexOf(cur) + 1) % MODES.length];
+            applyTheme(window.innerWidth <= 640 ? 'system' : preferredMode());
+            themeButton.addEventListener('click', () => {
+                const current = preferredMode();
+                const next = MODES[(MODES.indexOf(current) + 1) % MODES.length];
                 localStorage.setItem('fdx-theme', next);
                 applyTheme(next);
             });
-            window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
-                if (isMobile() || getPreferred() === 'system') applyTheme('system');
+            systemTheme.addEventListener('change', () => {
+                if (window.innerWidth <= 640 || preferredMode() === 'system') applyTheme('system');
             });
-            window.addEventListener('resize', () => {
-                if (isMobile()) applyTheme('system');
-                else applyTheme(getPreferred());
-            }, { passive: true });
         }
 
-        /* ── Boot ────────────────────────────────────── */
-        document.addEventListener('DOMContentLoaded', async () => {
-            initTheme();
-            build();
-            measureNav();
-            window.addEventListener('resize', measureNav, { passive: true });
-            await hydrate();
-            initReveal();
-            initActiveNav();
-            jumpHash();
+        closeButton.addEventListener('click', requestClose);
+        dialog.addEventListener('cancel', event => {
+            event.preventDefault();
+            requestClose();
         });
+        dialog.addEventListener('click', event => {
+            if (event.target === dialog) requestClose();
+        });
+        dialog.addEventListener('close', () => {
+            if (opener?.isConnected) opener.focus();
+            opener = null;
+        });
+        window.addEventListener('popstate', syncFromHash);
+        window.addEventListener('resize', () => {
+            scheduleFit();
+            applyTheme(window.innerWidth <= 640 ? 'system' : preferredMode());
+        }, { passive: true });
+
+        async function init() {
+            try {
+                await loadTopics();
+                buildTiles();
+                scheduleFit();
+                syncFromHash();
+                document.fonts?.ready.then(scheduleFit);
+            } catch (error) {
+                grid.innerHTML = '<li class="status">Unable to load topics. Serve this folder over HTTP and try again.</li>';
+                console.error(error);
+            }
+        }
+
+        initTheme();
+        init();
     })();
     </script>
 </body>
