@@ -2,7 +2,7 @@
 
 ## Repository purpose
 
-FDX (Frontier Disambiguation Experience) is a small, static reference site that helps readers distinguish among organizations, programs, credentials, frameworks, and industry terms that use the word "Frontier." The landing page in `index.html` presents one tile per topic and renders the corresponding root-level Markdown file in a dialog.
+FDX (Frontier Disambiguation Experience) is a small, static reference site that helps readers distinguish among organizations, programs, credentials, frameworks, and industry terms that use the word "Frontier." The landing page in `index.html` presents one tile per topic and renders the corresponding Markdown file from `pages/` in a dialog.
 
 Treat the active Markdown files as concise reference entries, not blog posts, announcements, or marketing pages. A reader should be able to answer three questions quickly:
 
@@ -82,7 +82,7 @@ Do not rely on tables, ordered lists, images, blockquotes, task lists, fenced co
 
 ## Adding or changing topics
 
-- Active topic files live at the repository root and use short lowercase filenames without spaces, consistent with the existing files.
+- Active topic files live under `pages/` and use short lowercase filenames without spaces, consistent with the existing files.
 - Adding a Markdown file alone does not expose it in the site. Add a matching `{ id, src }` entry to the `TOPICS` array in `index.html`; the `id` becomes the URL hash and should be stable, lowercase, and hyphenated.
 - When renaming a topic, consider existing shared hash URLs before changing its `id`. Prefer keeping the current `id` unless the task requires a URL change.
 - Check nearby entries for overlapping terminology and clarify the distinction in the definition when readers could confuse them.
