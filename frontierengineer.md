@@ -2,13 +2,13 @@
 
 ## What is it?
 
-The **Frontier Transformation Engineer Badge** is a new learning path introduced by Microsoft, delivered through the Titan Academy. It prepares Solution Engineers and Solution Architects within partner organisations to design, build, and operate production-ready agentic AI solutions across the Frontier Transformation stack.
+The **Frontier Transformation Engineer Badge** is a new learning path introduced by Microsoft, delivered through the Titan Academy. It prepares Solution Engineers and Solution Architects within partner organizations to design, build, and operate production-ready agentic AI solutions across the Frontier Transformation stack.
 
 The badge covers the following technologies:
 
 - Microsoft Copilot
 - Copilot Studio
-- Azure AI Foundry
+- Microsoft Foundry
 - GitHub Copilot
 - Microsoft Fabric
 - Agent 365
@@ -20,6 +20,14 @@ The Frontier Transformation Engineer journey is hands-on by design and follows a
 ### 1. Earn Required Certifications
 Establish a shared technical baseline through targeted certifications that validate foundational knowledge across the Frontier Transformation stack.
 
+- GH-300: GitHub Copilot
+- AB-100: Agentic AI Business Solution Architect
+- AI-103: Developing AI Apps and Agents on Azure
+  \- or -
+- AI-102: Azure AI Engineer Associate (retired June 30, 2026\*)
+
+\* Azure AI Engineer Associate can no longer be earned or renewed, but the certification will count if still active on the learner's transcript.
+
 ### 2. Project Ready
 Demonstrate delivery capability by building and integrating agents with governance, security, and compliance considerations built in from the start.
 
@@ -28,7 +36,7 @@ Build the skills for operating at scale through governance, delivery velocity, a
 
 ## Who Is It For?
 
-- Solution Engineers and Solution Architects within Microsoft partner organisations.
+- Solution Engineers and Solution Architects within Microsoft partner organizations.
 - Engineers looking to move customers from AI prototypes to trusted, governed deployments.
 
 ## The Outcome
@@ -38,4 +46,4 @@ Delivery-ready engineers who can take customers from early-stage AI prototypes t
 ## Resources
 
 - [Frontier Transformation Engineer Badge Announcement (Nicole Dezen)](https://blogs.microsoft.com/blog/2026/04/21/accelerating-frontier-transformation-with-microsoft-partners/)
-- [Microsoft Titan Skilling Academy](https://skillupwithlevelup.com/titan)
+- [Frontier Transformation Engineer requirements](https://skillupwithlevelup.com/titan)

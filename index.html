@@ -631,14 +631,17 @@
         'use strict';
 
         const TOPICS = [
+            { id: 'frontier-accelerate', src: 'frontieraccelerate.md' },
+            { id: 'frontier-ai', src: 'frontierai.md' },
+            { id: 'frontier-distributor', src: 'frontierdistributor.md' },
             { id: 'frontier-firm', src: 'frontierfirm.md' },
+            { id: 'frontier-transformation', src: 'frontiertransformation.md' },
+            { id: 'frontier-model-forum', src: 'frontiermodelforum.md' },
             { id: 'frontier-professional', src: 'frontierprofessional.md' },
             { id: 'frontier-program', src: 'frontierprogram.md' },
-            { id: 'frontier-partner', src: 'frontierpartner.md' },
+            { id: 'frontier-specialization', src: 'frontierspecialization.md' },
             { id: 'frontier-engineer', src: 'frontierengineer.md' },
-            { id: 'frontier-distributor', src: 'frontierdistributor.md' },
-            { id: 'frontier-ai', src: 'frontierai.md' },
-            { id: 'frontier-model-forum', src: 'frontiermodelforum.md' },
+            { id: 'microsoft-frontier-company', src: 'microsoftfrontiercompany.md' },
             { id: 'openai-frontier', src: 'openaifrontier.md' }
         ];
 
@@ -872,7 +875,8 @@
                 const listItem = rawLine.match(/^([ \t]*)[-*]\s+(.*)$/);
                 if (listItem) {
                     flush();
-                    let depth = Math.floor(listItem[1].replace(/\t/g, '    ').length / 4);
+                    const indentation = listItem[1].replace(/\t/g, '    ').length;
+                    let depth = indentation === 0 ? 0 : Math.ceil(indentation / 4);
                     if (depth > listDepth + 1) depth = listDepth + 1;
                     while (listDepth < depth) openList();
                     while (listDepth > depth) closeList();
@@ -894,6 +898,7 @@
 
         function inline(value) {
             let output = esc(value);
+            output = output.replace(/\\([\\`*_[\]{}()#+\-.!>])/g, (_, character) => `&#${character.charCodeAt(0)};`);
             output = output.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
             output = output.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
             output = output.replace(/`([^`]+)`/g, '<code>$1</code>');

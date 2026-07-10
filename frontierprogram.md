@@ -13,7 +13,7 @@
 
 ## Eligibility & Access
 
-- Available to all customers with an active Microsoft 365 Copilot licence.
+- Available to all customers with an active Microsoft 365 Copilot license.
 - Admins can selectively enable Frontier features for specific users or groups.
 - No nomination process--features appear in the "Built by Microsoft" section of the app store when enabled.
 - Individuals with Microsoft 365 Personal, Family, or Premium subscriptions can also access and use certain Frontier features.
@@ -22,11 +22,11 @@
 
 - **Early Innovation:** Stay ahead by testing cutting-edge AI tools.
 - **Feedback Loop:** Influence product design by sharing insights.
-- **Competitive Edge:** Helps organisations shape mid-term GenAI strategies.
+- **Competitive Edge:** Helps organizations shape mid-term GenAI strategies.
 
 ## Important Notes
 
-- Features are preview-only, may lack localisation or support, and could include technologies that never reach GA.
+- Features are preview-only, may lack localization or support, and could include technologies that never reach GA.
 - Initial rollout started in April 2025, expanding globally over time.
 
 ## Resources

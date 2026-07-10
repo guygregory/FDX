@@ -2,9 +2,9 @@
 
 ## What is it?
 
-The Frontier Distributor Designation is a new Solutions Partner designation introduced by Microsoft as part of its AI Cloud Partner Programme. It sets a high bar for modern, value-added distribution and is designed to spotlight distributors that deliver world-class capabilities across cloud, AI, and security, moving beyond transactional models to act as trusted advisors for indirect resellers.
+The Frontier Distributor Designation is a new Solutions Partner designation introduced by Microsoft as part of its AI Cloud Partner Program. It sets a high bar for modern, value-added distribution and is designed to spotlight distributors that deliver world-class capabilities across cloud, AI, and security, moving beyond transactional models to act as trusted advisors for indirect resellers.
 
-The designation recognises distributors who meet elevated standards of performance and enablement, and it was announced at Microsoft Ignite 2025 before becoming available globally.
+The designation recognizes distributors who meet elevated standards of performance and enablement, and it was announced at Microsoft Ignite 2025 before becoming available globally.
 
 Distributors who achieve this designation receive:
 
@@ -14,14 +14,14 @@ Distributors who achieve this designation receive:
 This recognition matters because it:
 
 - Helps indirect resellers quickly identify trusted distributors with platforms and services that accelerate growth and customer success.
-- Drives reseller preference, standardises support, and reduces rework and escalations.
+- Drives reseller preference, standardizes support, and reduces rework and escalations.
 - Validates a distributor's investments in modern enablement capabilities, ensuring consistency and compliance.
 
 ## Core Capabilities Expected
 
 - **Premium services:** Digital platforms, shared services, and presales depth to boost adoption and renewals.
 - **Faster deal velocity:** Skilling at scale and repeatable deployment motions to remove friction.
-- **Lower cost to serve:** Standardised support and reduced escalations.
+- **Lower cost to serve:** Standardized support and reduced escalations.
 - **Proof that travels:** Demonstrated benchmarks for compliance and customer success.
 
 ## Qualification & Process

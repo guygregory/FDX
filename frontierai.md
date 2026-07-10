@@ -1,8 +1,8 @@
-# Frontier AI
+# Frontier AI Models
 
 ## What is it?
 
-The term **"Frontier AI [models]"** was coined in 2023 to describe "highly capable foundation models that could possess dangerous capabilities sufficient to pose severe risks to public safety." Since its introduction, the "Frontier" terminology has been widely adopted as a recognised industry term for describing the most advanced AI models, especially in the context of risk, safety, and regulation.
+The term **"Frontier AI [models]"** was coined in 2023 to describe "highly capable foundation models that could possess dangerous capabilities sufficient to pose severe risks to public safety." Since its introduction, the "Frontier" terminology has been widely adopted as a recognized industry term for describing the most advanced AI models, especially in the context of risk, safety, and regulation.
 
 ## Why It Matters
 

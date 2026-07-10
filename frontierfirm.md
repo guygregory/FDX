@@ -2,7 +2,7 @@
 
 ## What is it?
 
-A **Frontier Firm** is a concept introduced by Microsoft to describe a next-generation organisation that fundamentally reimagines how work is done by combining human judgment with AI agents. These firms are designed to scale faster, operate with agility, and unlock new value through on-demand intelligence and hybrid teams of humans and AI agents.
+A **Frontier Firm** is a concept introduced by Microsoft to describe a next-generation organization that fundamentally reimagines how work is done by combining human judgment with AI agents. These firms are designed to scale faster, operate with agility, and unlock new value through on-demand intelligence and hybrid teams of humans and AI agents.
 
 ### Definition
 

@@ -9,7 +9,7 @@ The Frontier Partner badge is a new recognition introduced under the Microsoft A
 
 ## Eligibility
 
-- Partners must achieve three specialisations:
+- Partners must achieve three specializations:
 	- Microsoft Copilot
 	- Build AI Apps, AI Platform, or Accelerate Developer Productivity
 	- Data Security
