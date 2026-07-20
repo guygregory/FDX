@@ -33,3 +33,4 @@ Partners must also demonstrate:
 ## Resources
 
 - [Frontier Transformation Engineer Summit](https://aka.ms/FrontierPartnerSummit)
+- [Frontier Center of Excellence](https://aka.ms/FrontierCoE_Partner)

@@ -46,4 +46,6 @@ Delivery-ready engineers who can take customers from early-stage AI prototypes t
 ## Resources
 
 - [Frontier Transformation Engineer Badge Announcement (Nicole Dezen)](https://blogs.microsoft.com/blog/2026/04/21/accelerating-frontier-transformation-with-microsoft-partners/)
-- [Frontier Transformation Engineer requirements](https://skillupwithlevelup.com/titan)
+- [Frontier Transformation Engineer requirements](https://aka.ms/frontier/engineer)
+- [Hypervelocity Engineering Framework](https://github.com/microsoft/hve-core/)
+- [Frontier Center of Excellence](https://aka.ms/FrontierCoE_Partner)
